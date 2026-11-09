@@ -35,12 +35,32 @@ function topFeatures(features: string[]): { shown: string[]; extra: number } {
           {showRank && <th scope="col">#</th>}
           <th scope="col">Provider</th>
           <th scope="col">Plan</th>
-          <th scope="col" class="num">vCPU</th>
-          <th scope="col" class="num">RAM</th>
-          <th scope="col">Storage</th>
+          <th scope="col" class="num" data-sort-key="vcpu" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="vcpu">
+              vCPU <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" class="num" data-sort-key="ram" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="ram">
+              RAM <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" data-sort-key="storage" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="storage">
+              Storage <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
           <th scope="col">Traffic</th>
-          <th scope="col" class="num">Price / mo</th>
-          <th scope="col" class="num">R / GB RAM</th>
+          <th scope="col" class="num" data-sort-key="price" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="price">
+              Price / mo <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" class="num" data-sort-key="value" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="value">
+              R / GB RAM <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
           <th scope="col">Features</th>
           <th scope="col"><span class="visually-hidden">Order</span></th>
         </tr>

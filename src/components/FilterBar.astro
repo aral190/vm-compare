@@ -61,10 +61,15 @@ const { providers } = Astro.props;
       <label for="filter-sort">Sort by</label>
       <select id="filter-sort" name="sort">
         <option value="price-asc">Lowest price</option>
+        <option value="price-desc">Highest price</option>
         <option value="value-asc">Best price per GB RAM</option>
+        <option value="value-desc">Worst price per GB RAM</option>
         <option value="ram-desc">Most RAM</option>
+        <option value="ram-asc">Least RAM</option>
         <option value="vcpu-desc">Most vCPU</option>
+        <option value="vcpu-asc">Least vCPU</option>
         <option value="storage-desc">Most storage</option>
+        <option value="storage-asc">Least storage</option>
       </select>
     </div>
 
@@ -140,14 +145,24 @@ const { providers } = Astro.props;
         const priceA = Number(a.dataset.price);
         const priceB = Number(b.dataset.price);
         switch (direction) {
+          case 'price-desc':
+            return priceB - priceA;
           case 'value-asc':
             return Number(a.dataset.value) - Number(b.dataset.value) || priceA - priceB;
+          case 'value-desc':
+            return Number(b.dataset.value) - Number(a.dataset.value) || priceB - priceA;
           case 'ram-desc':
             return Number(b.dataset.ram) - Number(a.dataset.ram) || priceA - priceB;
+          case 'ram-asc':
+            return Number(a.dataset.ram) - Number(b.dataset.ram) || priceA - priceB;
           case 'vcpu-desc':
             return Number(b.dataset.vcpu) - Number(a.dataset.vcpu) || priceA - priceB;
+          case 'vcpu-asc':
+            return Number(a.dataset.vcpu) - Number(b.dataset.vcpu) || priceA - priceB;
           case 'storage-desc':
             return Number(b.dataset.storage) - Number(a.dataset.storage) || priceA - priceB;
+          case 'storage-asc':
+            return Number(a.dataset.storage) - Number(b.dataset.storage) || priceA - priceB;
           default:
             return priceA - priceB;
         }
@@ -166,6 +181,15 @@ const { providers } = Astro.props;
       countNode.textContent = `${visible} plan${visible === 1 ? '' : 's'}`;
       if (empty) empty.hidden = visible !== 0;
 
+      const [sortKey, sortDirection] = sort.value.split('-');
+      for (const header of document.querySelectorAll<HTMLElement>('th[data-sort-key]')) {
+        const active = header.dataset.sortKey === sortKey;
+        header.classList.toggle('is-sorted', active);
+        header.setAttribute('aria-sort', active ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none');
+        const arrow = header.querySelector<HTMLElement>('.sort-arrow');
+        if (arrow) arrow.textContent = active ? (sortDirection === 'asc' ? '↑' : '↓') : '↕';
+      }
+
       const next = new URLSearchParams();
       if (ram.value) next.set('ram', ram.value);
       if (vcpu.value) next.set('vcpu', vcpu.value);
@@ -183,6 +207,18 @@ const { providers } = Astro.props;
       form.reset();
       apply();
     });
+
+    for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-sort-key]')) {
+      button.addEventListener('click', () => {
+        const key = button.dataset.sortKey;
+        if (!key) return;
+        const next = sort.value === `${key}-asc` ? `${key}-desc` : `${key}-asc`;
+        if (Array.from(sort.options).some((option) => option.value === next)) {
+          sort.value = next;
+          apply();
+        }
+      });
+    }
 
     apply();
   }

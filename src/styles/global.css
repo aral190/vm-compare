@@ -753,6 +753,53 @@ kbd {
   font-variant-numeric: tabular-nums;
 }
 
+.price-table thead th[data-sort-key] {
+  padding: 0;
+}
+
+.sort-button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 11px 12px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  white-space: nowrap;
+}
+
+.price-table th.num .sort-button {
+  justify-content: flex-end;
+}
+
+.sort-button:hover {
+  background: #e6eeeb;
+  color: var(--text);
+}
+
+.sort-button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.sort-arrow {
+  font-size: 0.85em;
+  color: var(--faint);
+}
+
+.price-table th.is-sorted .sort-button {
+  color: var(--text);
+}
+
+.price-table th.is-sorted .sort-arrow {
+  color: var(--accent);
+}
+
 .price-table tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background 0.12s;
