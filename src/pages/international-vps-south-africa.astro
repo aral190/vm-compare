@@ -5,9 +5,13 @@ import { SITE_URL } from '../lib/site';
 import { withUtm } from '../lib/utm';
 
 const RATE = 18.5;
+const HOURS_PER_MONTH = 730;
+
+const zarInclVat = (usd: number) => Math.round(usd * RATE * 1.15 * 100);
 
 interface IntlPlan {
   name: string;
+  region: string;
   vcpu: number;
   ramGb: number;
   storageGb: number;
@@ -26,12 +30,12 @@ const providers: Array<{
     url: 'https://www.vultr.com/pricing/',
     note: 'Cloud Compute, Johannesburg region. Regular performance plans shown; high-frequency and dedicated CPU plans cost more.',
     plans: [
-      { name: 'Cloud Compute 1GB', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
-      { name: 'Cloud Compute 2GB', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 10 },
-      { name: 'Cloud Compute 4GB', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 3, usd: 20 },
-      { name: 'Cloud Compute 8GB', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 4, usd: 40 },
-      { name: 'Cloud Compute 16GB', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 5, usd: 80 },
-      { name: 'Cloud Compute 32GB', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 6, usd: 160 },
+      { name: 'Cloud Compute 1GB', region: 'Johannesburg', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
+      { name: 'Cloud Compute 2GB', region: 'Johannesburg', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 10 },
+      { name: 'Cloud Compute 4GB', region: 'Johannesburg', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 3, usd: 20 },
+      { name: 'Cloud Compute 8GB', region: 'Johannesburg', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 4, usd: 40 },
+      { name: 'Cloud Compute 16GB', region: 'Johannesburg', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 5, usd: 80 },
+      { name: 'Cloud Compute 32GB', region: 'Johannesburg', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 6, usd: 160 },
     ],
   },
   {
@@ -39,12 +43,12 @@ const providers: Array<{
     url: 'https://www.linode.com/pricing/',
     note: 'Shared CPU instances in the Johannesburg region. Dedicated CPU and high-memory plans cost more.',
     plans: [
-      { name: 'Nanode 1GB', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
-      { name: 'Linode 2GB', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 12 },
-      { name: 'Linode 4GB', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 4, usd: 24 },
-      { name: 'Linode 8GB', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 5, usd: 48 },
-      { name: 'Linode 16GB', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 8, usd: 96 },
-      { name: 'Linode 32GB', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 10, usd: 192 },
+      { name: 'Nanode 1GB', region: 'Johannesburg', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
+      { name: 'Linode 2GB', region: 'Johannesburg', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 12 },
+      { name: 'Linode 4GB', region: 'Johannesburg', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 4, usd: 24 },
+      { name: 'Linode 8GB', region: 'Johannesburg', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 5, usd: 48 },
+      { name: 'Linode 16GB', region: 'Johannesburg', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 8, usd: 96 },
+      { name: 'Linode 32GB', region: 'Johannesburg', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 10, usd: 192 },
     ],
   },
 ];
@@ -54,9 +58,43 @@ const rows = providers.flatMap((provider) =>
     provider: provider.name,
     providerUrl: provider.url,
     ...plan,
-    zarInclVatCents: Math.round(plan.usd * RATE * 1.15 * 100),
+    zarInclVatCents: zarInclVat(plan.usd),
   })),
 );
+
+interface AwsInstance {
+  name: string;
+  family: string;
+  vcpu: number;
+  ramGb: number;
+  network: string;
+  usdHour: number;
+}
+
+// AWS EC2 on-demand Linux, shared tenancy, af-south-1 (Africa / Cape Town).
+// Source: AWS Price List API, cross-checked against instances.vantage.sh.
+const awsInstances: AwsInstance[] = [
+  { name: 't4g.micro', family: 'Burstable', vcpu: 2, ramGb: 1, network: 'Up to 5 Gbps', usdHour: 0.0108 },
+  { name: 't4g.small', family: 'Burstable', vcpu: 2, ramGb: 2, network: 'Up to 5 Gbps', usdHour: 0.0217 },
+  { name: 't4g.medium', family: 'Burstable', vcpu: 2, ramGb: 4, network: 'Up to 5 Gbps', usdHour: 0.0434 },
+  { name: 't3.small', family: 'Burstable', vcpu: 2, ramGb: 2, network: 'Up to 5 Gbps', usdHour: 0.0271 },
+  { name: 't3.medium', family: 'Burstable', vcpu: 2, ramGb: 4, network: 'Up to 5 Gbps', usdHour: 0.0542 },
+  { name: 't4g.large', family: 'Burstable', vcpu: 2, ramGb: 8, network: 'Up to 5 Gbps', usdHour: 0.0867 },
+  { name: 't3.large', family: 'Burstable', vcpu: 2, ramGb: 8, network: 'Up to 5 Gbps', usdHour: 0.1085 },
+  { name: 'c6g.large', family: 'Compute', vcpu: 2, ramGb: 4, network: 'Up to 10 Gbps', usdHour: 0.0912 },
+  { name: 'm6g.large', family: 'General', vcpu: 2, ramGb: 8, network: 'Up to 10 Gbps', usdHour: 0.1016 },
+  { name: 'r6g.large', family: 'Memory', vcpu: 2, ramGb: 16, network: 'Up to 10 Gbps', usdHour: 0.1344 },
+  { name: 'c6g.xlarge', family: 'Compute', vcpu: 4, ramGb: 8, network: 'Up to 10 Gbps', usdHour: 0.1824 },
+  { name: 'm6g.xlarge', family: 'General', vcpu: 4, ramGb: 16, network: 'Up to 10 Gbps', usdHour: 0.2032 },
+  { name: 'r6g.xlarge', family: 'Memory', vcpu: 4, ramGb: 32, network: 'Up to 10 Gbps', usdHour: 0.2688 },
+];
+
+const awsRows = awsInstances.map((instance) => ({
+  ...instance,
+  usdMonth: instance.usdHour * HOURS_PER_MONTH,
+  zarInclVatCents: zarInclVat(instance.usdHour * HOURS_PER_MONTH),
+  url: `https://instances.vantage.sh/aws/ec2/${instance.name}`,
+}));
 
 const structuredData = [
   {
@@ -67,7 +105,7 @@ const structuredData = [
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'International JNB VPS',
+        name: 'International Providers',
         item: `${SITE_URL}/international-vps-south-africa/`,
       },
     ],
@@ -75,43 +113,62 @@ const structuredData = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'International VPS providers with a Johannesburg region',
-    numberOfItems: rows.length,
-    itemListElement: rows.map((row, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Product',
-        name: `${row.provider} ${row.name}`,
-        description: `${row.vcpu} vCPU, ${row.ramGb} GB RAM, ${row.storageGb} GB SSD, ${row.transferTb} TB transfer`,
-        brand: { '@type': 'Brand', name: row.provider },
-        offers: {
-          '@type': 'Offer',
-          price: row.usd.toFixed(2),
-          priceCurrency: 'USD',
-          availability: 'https://schema.org/InStock',
-          url: row.providerUrl,
+    name: 'International VPS providers with South Africa regions',
+    numberOfItems: rows.length + awsRows.length,
+    itemListElement: [
+      ...rows.map((row, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: `${row.provider} ${row.name}`,
+          description: `${row.region}: ${row.vcpu} vCPU, ${row.ramGb} GB RAM, ${row.storageGb} GB SSD, ${row.transferTb} TB transfer`,
+          brand: { '@type': 'Brand', name: row.provider },
+          offers: {
+            '@type': 'Offer',
+            price: row.usd.toFixed(2),
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: row.providerUrl,
+          },
         },
-      },
-    })),
+      })),
+      ...awsRows.map((row, index) => ({
+        '@type': 'ListItem',
+        position: rows.length + index + 1,
+        item: {
+          '@type': 'Product',
+          name: `AWS EC2 ${row.name}`,
+          description: `Cape Town: ${row.vcpu} vCPU, ${row.ramGb} GB RAM, EBS storage, ${row.network}`,
+          brand: { '@type': 'Brand', name: 'AWS' },
+          offers: {
+            '@type': 'Offer',
+            price: row.usdHour.toFixed(4),
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: row.url,
+          },
+        },
+      })),
+    ],
   },
 ];
 ---
 
 <Base
-  title="International VPS providers with a Johannesburg region (2026)"
-  description="Vultr and Akamai/Linode VPS plans available in Johannesburg. USD list prices converted to rand including VAT, kept separate from the South African comparison."
+  title="International VPS with South Africa regions (2026)"
+  description="Vultr and Akamai/Linode in Johannesburg, plus AWS EC2 in Africa (Cape Town). USD prices converted to rand including VAT, kept separate from the South African comparison."
   canonicalPath="/international-vps-south-africa/"
   jsonLd={structuredData}
 >
   <section class="provider-hero">
     <div class="container">
-      <span class="section-label">International, JNB region</span>
-      <h1>International VPS with a Johannesburg region</h1>
+      <span class="section-label">International providers</span>
+      <h1>International VPS with South Africa regions</h1>
       <p class="hero-lede">
-        A few global providers run infrastructure in Johannesburg. Their prices are billed in US
-        dollars and often by the hour, so they are kept out of the main South African comparison.
-        This page shows indicative monthly prices for context.
+        Global providers now offer compute in Johannesburg and Cape Town. Their prices are billed in
+        US dollars and often by the hour, so they are kept separate from the main South African
+        comparison. This page shows indicative monthly prices for context.
       </p>
     </div>
   </section>
@@ -121,8 +178,20 @@ const structuredData = [
       <div class="callout">
         <strong>How to read these numbers.</strong> USD list prices are converted at an indicative
         R{RATE.toFixed(2)}/US$ and grossed up by 15% VAT to match the local comparison. International
-        providers may bill in USD, apply different VAT rules, or charge for extras such as snapshots
-        and IPv4 addresses. Treat these as a sanity check, not a quote.
+        providers may bill in USD, apply different VAT rules, or charge for extras such as EBS
+        volumes, snapshots and IPv4 addresses. Treat these as a sanity check, not a quote.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Johannesburg</span>
+          <h2>Global cloud VPS — Johannesburg</h2>
+          <p>Vultr and Akamai/Linode shared-CPU plans in the Johannesburg region.</p>
+        </div>
       </div>
 
       <div class="table-wrap">
@@ -132,6 +201,7 @@ const structuredData = [
               <tr>
                 <th scope="col">Provider</th>
                 <th scope="col">Plan</th>
+                <th scope="col">Region</th>
                 <th scope="col" class="num">vCPU</th>
                 <th scope="col" class="num">RAM</th>
                 <th scope="col">Storage</th>
@@ -145,14 +215,12 @@ const structuredData = [
               {rows.map((row) => (
                 <tr>
                   <td data-label="Provider">
-                    <a
-                      class="provider-link"
-                      href={withUtm(row.providerUrl)}
-                      target="_blank"
-                      rel="noopener"
-                    >{row.provider}</a>
+                    <a class="provider-link" href={withUtm(row.providerUrl)} target="_blank" rel="noopener">
+                      {row.provider}
+                    </a>
                   </td>
                   <td data-label="Plan">{row.name}</td>
+                  <td data-label="Region">{row.region}</td>
                   <td class="num" data-label="vCPU">{row.vcpu}</td>
                   <td class="num" data-label="RAM">{row.ramGb} GB</td>
                   <td data-label="Storage">{row.storageGb} GB SSD</td>
@@ -160,12 +228,64 @@ const structuredData = [
                   <td class="num" data-label="USD / mo">${row.usd}</td>
                   <td class="num" data-label="≈ ZAR incl. VAT">{formatRand(row.zarInclVatCents)}</td>
                   <td data-label="Website">
-                    <a
-                      class="order-link"
-                      href={withUtm(row.providerUrl)}
-                      target="_blank"
-                      rel="noopener"
-                    >View →</a>
+                    <a class="order-link" href={withUtm(row.providerUrl)} target="_blank" rel="noopener">View →</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Cape Town · af-south-1</span>
+          <h2>AWS EC2 — Africa (Cape Town)</h2>
+          <p>
+            On-demand Linux, shared tenancy. Storage is EBS only and billed separately. Instance
+            data and pricing cross-checked against
+            <a href={withUtm('https://instances.vantage.sh/')} target="_blank" rel="noopener">instances.vantage.sh</a>.
+          </p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="price-table">
+            <thead>
+              <tr>
+                <th scope="col">Instance</th>
+                <th scope="col">Family</th>
+                <th scope="col" class="num">vCPU</th>
+                <th scope="col" class="num">RAM</th>
+                <th scope="col">Storage</th>
+                <th scope="col">Network</th>
+                <th scope="col" class="num">USD / hr</th>
+                <th scope="col" class="num">USD / mo</th>
+                <th scope="col" class="num">≈ ZAR incl. VAT</th>
+                <th scope="col"><span class="visually-hidden">Reference</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {awsRows.map((row) => (
+                <tr>
+                  <td data-label="Instance">
+                    <a class="provider-link" href={withUtm(row.url)} target="_blank" rel="noopener">{row.name}</a>
+                  </td>
+                  <td data-label="Family">{row.family}</td>
+                  <td class="num" data-label="vCPU">{row.vcpu}</td>
+                  <td class="num" data-label="RAM">{row.ramGb} GB</td>
+                  <td data-label="Storage">EBS only</td>
+                  <td data-label="Network">{row.network}</td>
+                  <td class="num" data-label="USD / hr">${row.usdHour.toFixed(4)}</td>
+                  <td class="num" data-label="USD / mo">${row.usdMonth.toFixed(2)}</td>
+                  <td class="num" data-label="≈ ZAR incl. VAT">{formatRand(row.zarInclVatCents)}</td>
+                  <td data-label="Reference">
+                    <a class="order-link" href={withUtm(row.url)} target="_blank" rel="noopener">View →</a>
                   </td>
                 </tr>
               ))}
@@ -175,9 +295,9 @@ const structuredData = [
       </div>
 
       <p class="plan-sub" style="margin-top: 12px;">
-        South African providers remain the main comparison because they quote in rand, include local
-        support and usually avoid cross-border billing surprises.
-        <a href="/#compare">See the South African table →</a>
+        Monthly estimates assume 730 hours of on-demand runtime. Add EBS storage, snapshots, data
+        transfer and a public IPv4 address for a realistic total. AWS also offers Savings Plans and
+        reserved instances.
       </p>
     </div>
   </section>
@@ -186,16 +306,19 @@ const structuredData = [
     <div class="container prose">
       <h2>Why keep them separate?</h2>
       <p>
-        A Johannesburg region gives the same latency benefit as a local host, but the commercial
-        model is different. Global clouds quote in USD, bill by the hour, charge separately for
-        storage, snapshots and IPv4 addresses, and may apply reverse-charge VAT. Folding those
-        numbers into a rand-per-month table without a lot of assumptions would make the comparison
-        less honest, not more.
+        Johannesburg and Cape Town regions give the same latency benefit as a local host, but the
+        commercial model is different. Global clouds quote in USD, bill by the hour, charge
+        separately for storage, snapshots and IPv4 addresses, and may apply reverse-charge VAT.
+        Folding those numbers into a rand-per-month table without a lot of assumptions would make
+        the comparison less honest, not more.
       </p>
       <p>
         For a small South African project, a local provider is usually simpler and cheaper. For
         larger workloads that need object storage, managed databases or global networking, the
         international providers can be a better fit.
+      </p>
+      <p>
+        <a href="/#compare">See the South African comparison →</a>
       </p>
     </div>
   </section>

@@ -16,6 +16,7 @@ Companion to the [number1.co.za](https://number1.co.za) posts on [cheapest VPS h
 - Filters for minimum RAM, minimum vCPU, NVMe/SSD and provider, synced to the URL.
 - Generated SEO landing pages such as `/cheapest-4gb-vps-south-africa/`.
 - Provider pages with plans, features, reputation notes and a price-history chart.
+- Separate international comparison for Johannesburg and Cape Town: Vultr, Akamai/Linode and AWS EC2.
 - Weekly scraper that stores dated snapshots per provider and keeps last-known prices if a page breaks.
 - Provider requests go through GitHub Discussions: <https://github.com/aral190/vm-compare/discussions>. No newsletter backend.
 

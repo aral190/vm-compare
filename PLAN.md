@@ -78,7 +78,7 @@ Price per resource is the primary ranking. Secondary badges and notes cover:
 }
 ```
 
-`category` is `sa` (South African provider/hosting) or `international` (JNB region, kept in a separate section).
+`category` is `sa` (South African provider/hosting) or `international` (South Africa regions, kept in a separate section).
 
 `vat` is `incl`, `excl`, or `unknown`.
 
@@ -261,7 +261,7 @@ Prices are verified during seeding, including VAT treatment and billing term.
 
 - Afrihost, Xneelo, Elitehost, Cybersmart, Webafrica, Axxess
 - Other SA hosts with self-managed VPS products
-- **International, JNB region (separate category):** Vultr, Akamai/Linode, Oracle Cloud, AWS, GCP, Azure
+- **International, South Africa regions (separate category):** Vultr and Akamai/Linode (Johannesburg), AWS EC2 (Cape Town), plus Oracle Cloud, GCP and Azure if they have usable South African regions.
 
 Only providers with a real, orderable VPS product are listed.
 

@@ -57,28 +57,28 @@ const area = coords.length
       >
         <defs>
           <linearGradient id="history-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0f766e" stop-opacity="0.18"></stop>
-            <stop offset="100%" stop-color="#0f766e" stop-opacity="0"></stop>
+            <stop offset="0%" stop-color="#6742d6" stop-opacity="0.18"></stop>
+            <stop offset="100%" stop-color="#6742d6" stop-opacity="0"></stop>
           </linearGradient>
         </defs>
-        <line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} stroke="#dce4e1" stroke-width="1"></line>
+        <line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} stroke="#e5e5e5" stroke-width="1"></line>
         {points.length > 1 && <path d={area} fill="url(#history-fill)"></path>}
         <polyline
           points={line}
           fill="none"
-          stroke="#0f766e"
+          stroke="#6742d6"
           stroke-width="2.5"
           stroke-linejoin="round"
           stroke-linecap="round"
         ></polyline>
         {coords.map((point) => (
-          <circle cx={point.x} cy={point.y} r="3.5" fill="#0f766e">
+          <circle cx={point.x} cy={point.y} r="3.5" fill="#6742d6">
             <title>{`${formatDate(point.date)}: ${formatRandCompact(point.price)}`}</title>
           </circle>
         ))}
-        <text x={padX} y={14} font-size="11" fill="#586964">{formatRandCompact(max)}</text>
-        <text x={padX} y={height - 6} font-size="11" fill="#7b8a86">{formatRandCompact(min)}</text>
-        <text x={width - padX} y={height - 6} font-size="11" fill="#7b8a86" text-anchor="end">
+        <text x={padX} y={14} font-size="11" fill="#525252">{formatRandCompact(max)}</text>
+        <text x={padX} y={height - 6} font-size="11" fill="#737373">{formatRandCompact(min)}</text>
+        <text x={width - padX} y={height - 6} font-size="11" fill="#737373" text-anchor="end">
           {formatDate(sorted[sorted.length - 1].date)}
         </text>
       </svg>
