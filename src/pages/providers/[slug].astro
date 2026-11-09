@@ -96,13 +96,13 @@ const structuredData = [
         <span class="badge badge-outline">{vatLabel}</span>
         <a
           class="badge badge-outline"
-          href={withUtm(provider.website, { campaign: 'provider-page', content: `${provider.slug}-website` })}
+          href={withUtm(provider.website)}
           target="_blank"
           rel="noopener"
         >Website ↗</a>
         <a
           class="badge badge-outline"
-          href={withUtm(provider.pricingUrl, { campaign: 'provider-page', content: `${provider.slug}-pricing` })}
+          href={withUtm(provider.pricingUrl)}
           target="_blank"
           rel="noopener"
         >Pricing page ↗</a>

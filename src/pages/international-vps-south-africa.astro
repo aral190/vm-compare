@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import { formatRand } from '../lib/format';
 import { SITE_URL } from '../lib/site';
-import { slugify } from '../lib/slug';
 import { withUtm } from '../lib/utm';
 
 const RATE = 18.5;
@@ -148,7 +147,7 @@ const structuredData = [
                   <td data-label="Provider">
                     <a
                       class="provider-link"
-                      href={withUtm(row.providerUrl, { campaign: 'international-jnb', content: slugify(row.provider) })}
+                      href={withUtm(row.providerUrl)}
                       target="_blank"
                       rel="noopener"
                     >{row.provider}</a>
@@ -163,7 +162,7 @@ const structuredData = [
                   <td data-label="Website">
                     <a
                       class="order-link"
-                      href={withUtm(row.providerUrl, { campaign: 'international-jnb', content: slugify(row.provider) })}
+                      href={withUtm(row.providerUrl)}
                       target="_blank"
                       rel="noopener"
                     >View →</a>

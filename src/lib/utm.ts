@@ -1,20 +1,15 @@
 import { SITE_URL } from './site';
 
 const SITE_HOST = new URL(SITE_URL).hostname;
-
-export interface UtmOptions {
-  campaign?: string;
-  content?: string;
-  medium?: string;
-  source?: string;
-}
+const DEFAULT_UTM_SOURCE = 'vm-compare.fixes.co.za';
 
 /**
- * Add standard referral UTM parameters to external links.
+ * Add the referral source to external links.
  *
- * Existing UTM values are preserved, and internal links are returned unchanged.
+ * Override the value with PUBLIC_UTM_SOURCE in .env or the build environment.
+ * Internal links and URLs that already have a utm_source are left unchanged.
  */
-export function withUtm(url: string, options: UtmOptions = {}): string {
+export function withUtm(url: string): string {
   if (!/^https?:\/\//i.test(url)) return url;
 
   try {
@@ -22,16 +17,8 @@ export function withUtm(url: string, options: UtmOptions = {}): string {
     if (parsed.hostname === SITE_HOST) return url;
 
     if (!parsed.searchParams.has('utm_source')) {
-      parsed.searchParams.set('utm_source', options.source ?? 'vm-compare');
-    }
-    if (!parsed.searchParams.has('utm_medium')) {
-      parsed.searchParams.set('utm_medium', options.medium ?? 'referral');
-    }
-    if (options.campaign && !parsed.searchParams.has('utm_campaign')) {
-      parsed.searchParams.set('utm_campaign', options.campaign);
-    }
-    if (options.content && !parsed.searchParams.has('utm_content')) {
-      parsed.searchParams.set('utm_content', options.content);
+      const source = import.meta.env.PUBLIC_UTM_SOURCE || DEFAULT_UTM_SOURCE;
+      parsed.searchParams.set('utm_source', source);
     }
 
     return parsed.toString();

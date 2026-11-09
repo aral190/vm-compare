@@ -37,6 +37,7 @@ jobs:
         run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
+          PUBLIC_UTM_SOURCE: ${{ vars.PUBLIC_UTM_SOURCE }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

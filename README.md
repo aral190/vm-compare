@@ -76,16 +76,13 @@ Money is stored as integer rand cents. Every plan keeps both `priceInclVatCents`
 
 ## Outbound links
 
-Provider and partner links carry standard referral parameters:
+External provider and partner links get a single `utm_source` parameter:
 
 ```text
-utm_source=vm-compare
-utm_medium=referral
-utm_campaign=<comparison-table | provider-page | international-jnb | about | footer | methodology>
-utm_content=<plan id or provider slug>
+utm_source=vm-compare.fixes.co.za
 ```
 
-The helper lives in `src/lib/utm.ts`. It preserves any existing UTM values and leaves internal links and structured-data URLs unchanged.
+The default is set in `src/lib/utm.ts` and can be changed with the `PUBLIC_UTM_SOURCE` environment variable (see `.env.example`) in `.env` or the build environment. Internal links and URLs that already have a `utm_source` are left unchanged.
 
 ## Adding a provider
 
