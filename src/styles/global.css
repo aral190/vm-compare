@@ -735,9 +735,6 @@ kbd {
 }
 
 .price-table thead th {
-  position: sticky;
-  top: 66px;
-  z-index: 5;
   background: var(--surface-alt);
   color: var(--muted);
   font-size: 0.68rem;
