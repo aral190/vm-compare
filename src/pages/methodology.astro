@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getLivePlans, getLastUpdated } from '../lib/data';
 import { formatDate } from '../lib/format';
-import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from '../lib/site';
+import { GITHUB_DISCUSSIONS_URL, SITE_NAME, SITE_URL } from '../lib/site';
 import { withUtm } from '../lib/utm';
 
 const plans = getLivePlans();
@@ -101,7 +101,7 @@ const structuredData = {
       <p>
         Prices are checked automatically every week. If a provider page cannot be read, we keep the
         last known price and mark it as stale rather than deleting the plan. If you spot a price
-        that is wrong or out of date, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        that is wrong or out of date, <a href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">start a discussion on GitHub</a>
         with the provider and plan name and we will correct it.
       </p>
 

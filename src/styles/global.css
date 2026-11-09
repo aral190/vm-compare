@@ -239,6 +239,12 @@ kbd {
   color: var(--text);
 }
 
+.nav-github {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
 .nav-cta {
   background: var(--accent) !important;
   color: #fff !important;
@@ -281,6 +287,9 @@ kbd {
 }
 
 .mobile-menu nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 9px 12px;
   border-radius: 8px;
   color: var(--muted);
@@ -949,6 +958,22 @@ kbd {
   font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
 
+.provider-website {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.provider-website a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.provider-website a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
 .provider-meta {
   display: flex;
   flex-wrap: wrap;
@@ -1225,6 +1250,20 @@ kbd {
   padding-top: 18px;
   color: var(--faint);
   font-size: 0.78rem;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom a,
+.footer-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ---------- Responsive ---------- */

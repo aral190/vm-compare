@@ -6,13 +6,13 @@
     "pricingUrl": "https://rackzar.com/virtual-private-servers/standard-vps",
     "category": "sa",
     "locations": ["Johannesburg", "Cape Town"],
-    "vat": "unknown",
+    "vat": "incl",
     "adapter": "html",
     "fetchMode": "jina",
     "features": ["nvme", "kvm", "backups", "ipv6", "firewall", "console", "root-access", "local-support"],
     "reputation": "Proxmox partner with 400 Gbit peering, local support and dual-city presence in Johannesburg and Cape Town.",
     "affiliateUrl": null,
-    "notes": "VAT treatment not stated on the pricing page; treated as exclusive for comparison. Uses Cloudflare, so the scraper fetches through a reader proxy."
+    "notes": "Prices include VAT. Uses Cloudflare, so the scraper fetches through a reader proxy."
   },
   {
     "slug": "absolutehosting",

@@ -3,9 +3,11 @@ import Base from '../layouts/Base.astro';
 import FilterBar from '../components/FilterBar.astro';
 import PriceTable from '../components/PriceTable.astro';
 import WinnerCard from '../components/WinnerCard.astro';
+import GitHubIcon from '../components/GitHubIcon.astro';
 import { getLivePlans, getProviders, getTierWinners, getLastUpdated } from '../lib/data';
 import { formatDate, formatRand } from '../lib/format';
-import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
+import { GITHUB_DISCUSSIONS_URL, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
+import { withUtm } from '../lib/utm';
 
 const plans = getLivePlans();
 const providers = getProviders()
@@ -190,11 +192,12 @@ const structuredData = [
           <h2>Run a South African VPS provider?</h2>
           <p>
             If you host VMs in South Africa and your public pricing belongs in this comparison,
-            email us with your plan list and we will verify and add it.
+            start a discussion in the GitHub repository with your plan list and we will verify and
+            add it.
           </p>
         </div>
-        <a class="button button-primary" href={`mailto:${CONTACT_EMAIL}?subject=Add%20my%20VPS%20provider%20to%20VM%20Compare`}>
-          Email {CONTACT_EMAIL}
+        <a class="button button-primary" href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">
+          <GitHubIcon /> Start a discussion
         </a>
       </div>
     </div>

@@ -1,5 +1,6 @@
 ---
-import { CONTACT_EMAIL, CURRENT_YEAR, GITHUB_URL, PUBLISHER_URL } from '../lib/site';
+import GitHubIcon from './GitHubIcon.astro';
+import { CURRENT_YEAR, GITHUB_DISCUSSIONS_URL, GITHUB_URL, PUBLISHER_URL } from '../lib/site';
 import { getProviders } from '../lib/data';
 import { withUtm } from '../lib/utm';
 
@@ -14,19 +15,13 @@ const topProviders = providers.slice(0, 6);
         <a class="brand" href="/">
           <svg viewBox="0 0 64 64" aria-hidden="true">
             <rect width="64" height="64" rx="14" fill="#0f766e"></rect>
-            <path d="M16 22h20a10 10 0 0 1 0 20H16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"></path>
-            <circle cx="16" cy="22" r="5" fill="#fff"></circle>
-            <circle cx="16" cy="42" r="5" fill="#fff"></circle>
-            <path d="M44 22v20M52 22v20" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"></path>
+            <path d="M13 15 32 49 51 15" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
           <span>VM Compare<small>South Africa</small></span>
         </a>
         <p class="footer-about">
           Independent, weekly comparison of VPS and VM pricing in South African data centres.
           Prices are normalised to VAT-inclusive rand so you can compare like with like.
-        </p>
-        <p class="footer-about">
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         </p>
       </div>
 
@@ -55,15 +50,22 @@ const topProviders = providers.slice(0, 6);
         <a href="/updates/">Price updates</a>
         <a href="/international-vps-south-africa/">International JNB VPS</a>
         <a href="/about/">About</a>
-        <a href="/suggest-a-provider/">Suggest a provider</a>
-        <a href={withUtm(GITHUB_URL)} rel="noopener">Source on GitHub</a>
+        <a href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">Suggest a provider</a>
+        <a class="footer-github" href={withUtm(GITHUB_URL)} target="_blank" rel="noopener">
+          <GitHubIcon /> Source on GitHub
+        </a>
       </div>
     </div>
 
     <div class="footer-bottom">
       <span>© {CURRENT_YEAR} VM Compare South Africa. Independent comparison.</span>
-      <span>
-        Companion to <a href={withUtm(PUBLISHER_URL)} rel="noopener">number1.co.za</a>. Prices checked weekly.
+      <span class="footer-bottom-links">
+        <a href={withUtm(GITHUB_URL)} target="_blank" rel="noopener">
+          <GitHubIcon /> GitHub
+        </a>
+        <span>
+          Companion to <a href={withUtm(PUBLISHER_URL)} rel="noopener">number1.co.za</a>. Prices checked weekly.
+        </span>
       </span>
     </div>
   </div>

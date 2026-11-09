@@ -17,7 +17,7 @@ Companion to the [number1.co.za](https://number1.co.za) posts on [cheapest VPS h
 - Generated SEO landing pages such as `/cheapest-4gb-vps-south-africa/`.
 - Provider pages with plans, features, reputation notes and a price-history chart.
 - Weekly scraper that stores dated snapshots per provider and keeps last-known prices if a page breaks.
-- No newsletter backend: providers email `https://github.com/aral190/vm-compare/discussions` to request a listing.
+- Provider requests go through GitHub Discussions: <https://github.com/aral190/vm-compare/discussions>. No newsletter backend.
 
 ## Stack
 

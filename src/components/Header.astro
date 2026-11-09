@@ -1,12 +1,15 @@
+---
+import GitHubIcon from './GitHubIcon.astro';
+import { GITHUB_DISCUSSIONS_URL, GITHUB_URL } from '../lib/site';
+import { withUtm } from '../lib/utm';
+---
+
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="VM Compare South Africa home">
       <svg viewBox="0 0 64 64" aria-hidden="true">
         <rect width="64" height="64" rx="14" fill="#0f766e"></rect>
-        <path d="M16 22h20a10 10 0 0 1 0 20H16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"></path>
-        <circle cx="16" cy="22" r="5" fill="#fff"></circle>
-        <circle cx="16" cy="42" r="5" fill="#fff"></circle>
-        <path d="M44 22v20M52 22v20" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M13 15 32 49 51 15" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
       <span>
         VM Compare
@@ -19,7 +22,10 @@
       <a href="/providers/">Providers</a>
       <a href="/methodology/">Methodology</a>
       <a href="/faq/">FAQ</a>
-      <a class="nav-cta" href="/suggest-a-provider/">Add a provider</a>
+      <a class="nav-github" href={withUtm(GITHUB_URL)} target="_blank" rel="noopener">
+        <GitHubIcon /> GitHub
+      </a>
+      <a class="nav-cta" href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">Add a provider</a>
     </nav>
 
     <details class="mobile-menu">
@@ -31,7 +37,8 @@
         <a href="/cheapest-4gb-vps-south-africa/">Cheapest 4 GB</a>
         <a href="/methodology/">Methodology</a>
         <a href="/faq/">FAQ</a>
-        <a href="/suggest-a-provider/">Add a provider</a>
+        <a href={withUtm(GITHUB_URL)} target="_blank" rel="noopener"><GitHubIcon /> GitHub</a>
+        <a href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">Add a provider</a>
       </nav>
     </details>
   </div>

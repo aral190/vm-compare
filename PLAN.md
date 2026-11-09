@@ -24,7 +24,7 @@ A fast, static, SEO-first comparison site that shows the best value VPS plans in
 | `/methodology/` | How prices are normalised and ranked |
 | `/faq/` | Common questions, marked up with `FAQPage` |
 | `/about/` | Who runs the site, editorial policy |
-| `/suggest-a-provider/` | Prefilled `mailto:` for providers wanting to be listed |
+| `/suggest-a-provider/` | Links to GitHub Discussions for providers wanting to be listed |
 
 ### Homepage UX
 
@@ -284,7 +284,7 @@ Only providers with a real, orderable VPS product are listed.
 - DNS: `CNAME vm-compare` → `aral190.github.io`.
 - Repo file `public/CNAME` contains `vm-compare.fixes.co.za`.
 - Enable **Enforce HTTPS** once the certificate is issued.
-- Contact address: `https://github.com/aral190/vm-compare/discussions` (provider listing requests).
+- Provider requests and corrections: GitHub Discussions at `https://github.com/aral190/vm-compare/discussions`.
 
 ---
 

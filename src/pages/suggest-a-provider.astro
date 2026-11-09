@@ -1,35 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from '../lib/site';
-
-const subject = 'Add my VPS provider to VM Compare';
-const body = `Hi VM Compare,
-
-Please consider adding our VPS product to the comparison.
-
-Provider name:
-Website:
-Pricing page:
-Data centre location(s):
-
-Plans:
-- Plan name:
-  vCPU:
-  RAM:
-  Storage:
-  Storage type (NVMe / SSD / HDD):
-  Monthly price:
-  VAT included? (yes / no):
-  Billing term (monthly / annual):
-  Setup fee:
-  Bandwidth:
-  Backups included?:
-
-Anything else we should know:
-
-Thanks,
-`;
-const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+import GitHubIcon from '../components/GitHubIcon.astro';
+import { GITHUB_DISCUSSIONS_URL, SITE_NAME, SITE_URL } from '../lib/site';
+import { withUtm } from '../lib/utm';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -43,7 +16,7 @@ const structuredData = {
 
 <Base
   title="Suggest a VPS provider for the comparison"
-  description="Run a South African VPS provider? Email VM Compare with your pricing page and plan list to be considered for the weekly comparison."
+  description="Run a South African VPS provider? Start a GitHub discussion with your pricing page and plan list to be considered for the weekly comparison."
   canonicalPath="/suggest-a-provider/"
   jsonLd={structuredData}
 >
@@ -52,11 +25,14 @@ const structuredData = {
       <span class="section-label">Get listed</span>
       <h1>Suggest a provider</h1>
       <p class="hero-lede">
-        If you run a VPS or VM product in a South African data centre, we will verify your public
-        pricing and add it to the comparison. There is no charge for a standard listing.
+        If you run a VPS or VM product in a South African data centre, start a discussion in the
+        GitHub repository. We will verify your public pricing and add it to the comparison. There
+        is no charge for a standard listing.
       </p>
       <div class="hero-actions">
-        <a class="button button-primary" href={mailto}>Email {CONTACT_EMAIL}</a>
+        <a class="button button-primary" href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">
+          <GitHubIcon /> Start a discussion
+        </a>
         <a class="button button-secondary" href="/providers/">See who is listed</a>
       </div>
     </div>
@@ -64,8 +40,8 @@ const structuredData = {
 
   <section class="section">
     <div class="container prose">
-      <h2>What to send</h2>
-      <p>The email button opens a prefilled template. Include:</p>
+      <h2>What to include</h2>
+      <p>Start a discussion with the following details:</p>
       <ul>
         <li>Provider name, website and the public pricing page URL.</li>
         <li>The data-centre location or locations (Johannesburg, Cape Town or elsewhere).</li>
@@ -84,18 +60,19 @@ const structuredData = {
 
       <div class="callout">
         <strong>Corrections are welcome too.</strong> If a listed price is wrong or a plan has
-        changed, send the provider name, plan and a link to the current page. We will re-check it.
+        changed, start a discussion with the provider name, plan and a link to the current page. We
+        will re-check it.
       </div>
 
       <h2>What happens next</h2>
       <p>
-        We review the request, check the pricing page, and add the plans to the next weekly update.
-        Listings are editorial: paying for placement is not possible, and being listed does not
-        guarantee a top ranking.
+        We review the discussion, check the pricing page, and add the plans to the next weekly
+        update. Listings are editorial: paying for placement is not possible, and being listed does
+        not guarantee a top ranking.
       </p>
       <p>
-        Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> if the button above does not
-        open your mail client.
+        <a href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">Open GitHub Discussions</a>
+        to get started.
       </p>
     </div>
   </section>

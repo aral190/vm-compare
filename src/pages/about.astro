@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import GitHubIcon from '../components/GitHubIcon.astro';
 import { getLastUpdated, getLivePlans, getProviders } from '../lib/data';
 import { formatDate } from '../lib/format';
-import { CONTACT_EMAIL, GITHUB_URL, SITE_NAME, SITE_URL } from '../lib/site';
+import { GITHUB_DISCUSSIONS_URL, GITHUB_URL, SITE_NAME, SITE_URL } from '../lib/site';
 import { withUtm } from '../lib/utm';
 
 const plans = getLivePlans();
@@ -72,16 +73,21 @@ const structuredData = {
 
       <h2>Corrections</h2>
       <p>
-        Prices change, promotions end, and pages get redesigned. If you spot something wrong, email
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the provider, plan and a link,
-        and it will be fixed. The data pipeline and site source are public on
-        <a href={withUtm(GITHUB_URL)} rel="noopener">GitHub</a>.
+        Prices change, promotions end, and pages get redesigned. If you spot something wrong, start
+        a discussion on GitHub with the provider, plan and a link, and it will be fixed. The data
+        pipeline and site source are public on
+        <a href={withUtm(GITHUB_URL)} target="_blank" rel="noopener"><GitHubIcon /> GitHub</a>.
       </p>
 
       <h2>Contact</h2>
       <p>
-        Provider listing requests, corrections and general questions:
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        Provider listing requests, corrections and general questions are handled through GitHub
+        Discussions.
+      </p>
+      <p>
+        <a class="button button-secondary" href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">
+          <GitHubIcon /> Start a discussion
+        </a>
       </p>
     </div>
   </section>

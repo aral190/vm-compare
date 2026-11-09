@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import { getLivePlans, getLastUpdated } from '../lib/data';
 import { formatDate, formatRand } from '../lib/format';
-import { CONTACT_EMAIL, SITE_URL } from '../lib/site';
+import { GITHUB_DISCUSSIONS_URL, SITE_URL } from '../lib/site';
+import { withUtm } from '../lib/utm';
 
 const plans = getLivePlans();
 const cheapest = plans[0];
@@ -43,7 +44,7 @@ const faqs = [
   },
   {
     question: 'How do I get my VPS provider listed?',
-    answer: `Email ${CONTACT_EMAIL} with your company name, pricing page URL and plan list. We verify that the product is orderable and hosted in South Africa before adding it.`,
+    answer: `Start a discussion in the GitHub repository at ${GITHUB_DISCUSSIONS_URL} with your company name, pricing page URL and plan list. We verify that the product is orderable and hosted in South Africa before adding it.`,
   },
 ];
 
@@ -97,8 +98,8 @@ const structuredData = [
       </div>
 
       <p class="plan-sub" style="margin-top: 22px;">
-        Still stuck? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> or read the
-        <a href="/methodology/">full methodology</a>.
+        Still stuck? <a href={withUtm(GITHUB_DISCUSSIONS_URL)} target="_blank" rel="noopener">Start a discussion on GitHub</a>
+        or read the <a href="/methodology/">full methodology</a>.
       </p>
     </div>
   </section>
