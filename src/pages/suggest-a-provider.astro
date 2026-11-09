@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from '../lib/site';
+
+const subject = 'Add my VPS provider to VM Compare';
+const body = `Hi VM Compare,
+
+Please consider adding our VPS product to the comparison.
+
+Provider name:
+Website:
+Pricing page:
+Data centre location(s):
+
+Plans:
+- Plan name:
+  vCPU:
+  RAM:
+  Storage:
+  Storage type (NVMe / SSD / HDD):
+  Monthly price:
+  VAT included? (yes / no):
+  Billing term (monthly / annual):
+  Setup fee:
+  Bandwidth:
+  Backups included?:
+
+Anything else we should know:
+
+Thanks,
+`;
+const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Suggest a VPS provider',
+  url: `${SITE_URL}/suggest-a-provider/`,
+  description: 'Ask VM Compare South Africa to add your South African VPS provider to the comparison.',
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+};
+---
+
+<Base
+  title="Suggest a VPS provider for the comparison"
+  description="Run a South African VPS provider? Email VM Compare with your pricing page and plan list to be considered for the weekly comparison."
+  canonicalPath="/suggest-a-provider/"
+  jsonLd={structuredData}
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">Get listed</span>
+      <h1>Suggest a provider</h1>
+      <p class="hero-lede">
+        If you run a VPS or VM product in a South African data centre, we will verify your public
+        pricing and add it to the comparison. There is no charge for a standard listing.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={mailto}>Email {CONTACT_EMAIL}</a>
+        <a class="button button-secondary" href="/providers/">See who is listed</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>What to send</h2>
+      <p>The email button opens a prefilled template. Include:</p>
+      <ul>
+        <li>Provider name, website and the public pricing page URL.</li>
+        <li>The data-centre location or locations (Johannesburg, Cape Town or elsewhere).</li>
+        <li>Each plan's vCPU count, RAM, storage size and type, monthly price, VAT treatment and billing term.</li>
+        <li>Whether backups, a dedicated IPv4, one-click installs or a control panel are included.</li>
+        <li>Anything that makes your offering different, such as NVMe, a support SLA or API access.</li>
+      </ul>
+
+      <h2>What we check</h2>
+      <ul>
+        <li>The plan is publicly orderable, not invitation-only or discontinued.</li>
+        <li>The VM is hosted in South Africa, or the provider has a Johannesburg region.</li>
+        <li>The price is the recurring monthly price, not a first-month teaser.</li>
+        <li>VAT treatment is clear enough to normalise fairly.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Corrections are welcome too.</strong> If a listed price is wrong or a plan has
+        changed, send the provider name, plan and a link to the current page. We will re-check it.
+      </div>
+
+      <h2>What happens next</h2>
+      <p>
+        We review the request, check the pricing page, and add the plans to the next weekly update.
+        Listings are editorial: paying for placement is not possible, and being listed does not
+        guarantee a top ranking.
+      </p>
+      <p>
+        Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> if the button above does not
+        open your mail client.
+      </p>
+    </div>
+  </section>
+</Base>

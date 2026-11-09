@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+import PriceTable from '../components/PriceTable.astro';
+import { getLivePlans, getLastUpdated } from '../lib/data';
+import { formatDate, formatGb, formatPerGbRam, formatRand } from '../lib/format';
+import { SITE_URL } from '../lib/site';
+
+const INTROS: Record<number, string> = {
+  1: 'A 1 GB VPS is enough for a small website, a WireGuard or Tailscale node, uptime monitoring, a lightweight API or a personal blog.',
+  2: 'A 2 GB VPS suits a small WordPress site, a Docker host running a handful of containers, a CI runner or a small database.',
+  4: '4 GB is the most popular starting point for a real workload: multiple sites, a production database, n8n, Supabase or a small SaaS application.',
+  8: '8 GB gives you room for busy applications, larger databases, container stacks and memory-hungry tools such as n8n, Supabase or Elasticsearch.',
+  16: '16 GB is a comfortable production size for multi-service applications, larger MySQL or Postgres instances and teams running several environments on one box.',
+  32: '32 GB is for heavy production workloads, analytics, virtualisation or multi-tenant applications that need generous headroom.',
+  64: '64 GB and above is server-class territory: large databases, in-memory caches, analytics and many concurrent services.',
+  128: '128 GB plans are for serious workloads that would otherwise need a dedicated server.',
+};
+
+export function getStaticPaths() {
+  const tiers = [1, 2, 4, 8, 16, 32, 64, 128];
+  const plans = getLivePlans();
+  return tiers
+    .filter((tier) => plans.some((plan) => plan.ramGb >= tier))
+    .map((tier) => ({ params: { ram: String(tier) } }));
+}
+
+const ram = Number(Astro.params.ram);
+const plans = getLivePlans();
+const candidates = plans
+  .filter((plan) => plan.ramGb >= ram)
+  .sort((a, b) => a.priceInclVatCents - b.priceInclVatCents);
+const cheapest = candidates[0];
+// Best value is measured inside the size class so a 128 GB plan does not win
+// the 1 GB page on price per GB.
+const band = candidates.filter((plan) => plan.ramGb < ram * 2);
+const bestValue = (band.length ? band : candidates).reduce((best, plan) =>
+  plan.pricePerGbRamCents < best.pricePerGbRamCents ? plan : best,
+);
+const top = candidates.slice(0, 20);
+const lastUpdated = getLastUpdated();
+const year = new Date().getFullYear();
+const title = `Cheapest ${ram} GB VPS in South Africa (${year})`;
+const description = `The cheapest ${ram} GB RAM VPS in South Africa is ${cheapest.providerName} ${cheapest.plan} at ${formatRand(cheapest.priceInclVatCents)} per month including VAT. Compare ${candidates.length} plans with at least ${ram} GB RAM, updated ${formatDate(lastUpdated)}.`;
+
+const faqs = [
+  {
+    question: `What is the cheapest ${ram} GB VPS in South Africa?`,
+    answer: `As of ${formatDate(lastUpdated)}, the cheapest plan with at least ${ram} GB RAM is ${cheapest.providerName} ${cheapest.plan} at ${formatRand(cheapest.priceInclVatCents)} per month including VAT. It includes ${cheapest.vcpu} vCPU, ${formatGb(cheapest.ramGb)} RAM and ${formatGb(cheapest.storageGb)} of ${cheapest.storageType.toUpperCase()} storage.`,
+  },
+  {
+    question: `Are these ${ram} GB VPS prices VAT inclusive?`,
+    answer: 'Yes. Every price in this comparison is normalised to South African rand including 15% VAT. Where a provider advertises prices excluding VAT, we gross the price up by 15% and show the original as-listed price underneath.',
+  },
+  {
+    question: `Do I need ${ram} GB of RAM?`,
+    answer: INTROS[ram] ?? `A ${ram} GB VPS is a good fit when your workload needs more memory than a smaller plan can provide. Choose the smallest plan that leaves some headroom for spikes and caching.`,
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: `${ram} GB VPS`, item: `${SITE_URL}/cheapest-${ram}gb-vps-south-africa/` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `Cheapest ${ram} GB VPS plans in South Africa`,
+    numberOfItems: top.length,
+    itemListElement: top.map((plan, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: `${plan.providerName} ${plan.plan}`,
+        description: `${plan.vcpu} vCPU, ${plan.ramGb} GB RAM, ${plan.storageGb} GB ${plan.storageType.toUpperCase()}`,
+        brand: { '@type': 'Brand', name: plan.providerName },
+        offers: {
+          '@type': 'Offer',
+          price: (plan.priceInclVatCents / 100).toFixed(2),
+          priceCurrency: 'ZAR',
+          availability: 'https://schema.org/InStock',
+          url: plan.url,
+        },
+      },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  },
+];
+---
+
+<Base title={title} description={description} canonicalPath={`/cheapest-${ram}gb-vps-south-africa/`} jsonLd={structuredData}>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow"><span class="dot"></span>{candidates.length} plans · updated {formatDate(lastUpdated)}</span>
+      <h1>Cheapest {ram} GB VPS in South Africa</h1>
+      <p class="hero-lede">
+        The cheapest plan with at least {ram} GB of RAM is
+        <strong>{cheapest.providerName} {cheapest.plan}</strong> at
+        <strong>{formatRand(cheapest.priceInclVatCents)} per month</strong> including VAT.
+      </p>
+      <p class="hero-lede">{INTROS[ram] ?? ''}</p>
+      <div class="hero-stats">
+        <span class="stat-pill"><strong>{formatRand(cheapest.priceInclVatCents)}</strong> cheapest</span>
+        <span class="stat-pill"><strong>{formatPerGbRam(cheapest.pricePerGbRamCents)}</strong> on the winner</span>
+        <span class="stat-pill"><strong>{formatRand(bestValue.priceInclVatCents)}</strong> best per GB ({bestValue.providerName})</span>
+      </div>
+      <div class="hero-actions">
+        <a class="button button-primary" href={`/?ram=${ram}#compare`}>See all plans in the table</a>
+        <a class="button button-secondary" href="/methodology/">How we rank</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Top {top.length} cheapest</span>
+          <h2 id="cheapest-list">Plans with at least {ram} GB RAM</h2>
+          <p>
+            Showing the {top.length} cheapest of {candidates.length} qualifying plans. Use the main
+            comparison table to filter by vCPU, storage type or provider.
+          </p>
+        </div>
+      </div>
+      <PriceTable plans={top} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>What to check before you buy</h2>
+      <p>{INTROS[ram]}</p>
+      <p>
+        Price is only one variable. Check whether the plan includes NVMe or SATA SSD, whether
+        backups are included or an add-on, how much traffic you get, and where the data centre is
+        located. A Johannesburg or Cape Town location will give South African users much lower
+        latency than a server in Europe.
+      </p>
+      <p>
+        The <strong>best price per GB</strong> in this category is
+        <a href={`/providers/${bestValue.provider}/`}>{bestValue.providerName} {bestValue.plan}</a>
+        at {formatPerGbRam(bestValue.pricePerGbRamCents)}, even if it is not the cheapest absolute
+        price.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">FAQ</span>
+          <h2>{ram} GB VPS questions</h2>
+        </div>
+      </div>
+      <div class="faq-list">
+        {faqs.map((faq) => (
+          <details class="faq-item">
+            <summary>{faq.question}</summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

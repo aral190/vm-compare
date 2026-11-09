@@ -1,0 +1,35 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "absolutehosting-silver",
+        "priceInclVatCents": 6785,
+        "vcpu": 1,
+        "ramGb": 1,
+        "storageGb": 20
+      },
+      {
+        "id": "absolutehosting-palladium",
+        "priceInclVatCents": 13570,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 40
+      },
+      {
+        "id": "absolutehosting-osmium",
+        "priceInclVatCents": 27140,
+        "vcpu": 4,
+        "ramGb": 4,
+        "storageGb": 80
+      },
+      {
+        "id": "absolutehosting-iridium",
+        "priceInclVatCents": 40710,
+        "vcpu": 6,
+        "ramGb": 6,
+        "storageGb": 120
+      }
+    ]
+  }
+]

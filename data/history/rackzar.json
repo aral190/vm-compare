@@ -1,0 +1,35 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "rackzar-klx1",
+        "priceInclVatCents": 11385,
+        "vcpu": 1,
+        "ramGb": 2,
+        "storageGb": 25
+      },
+      {
+        "id": "rackzar-klx2",
+        "priceInclVatCents": 22885,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 60
+      },
+      {
+        "id": "rackzar-klx3",
+        "priceInclVatCents": 45885,
+        "vcpu": 4,
+        "ramGb": 8,
+        "storageGb": 120
+      },
+      {
+        "id": "rackzar-klx4",
+        "priceInclVatCents": 57385,
+        "vcpu": 6,
+        "ramGb": 8,
+        "storageGb": 200
+      }
+    ]
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "virtualservers-1gb",
+        "priceInclVatCents": 14900,
+        "vcpu": 1,
+        "ramGb": 1,
+        "storageGb": 32
+      },
+      {
+        "id": "virtualservers-2gb",
+        "priceInclVatCents": 24900,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 64
+      },
+      {
+        "id": "virtualservers-4gb",
+        "priceInclVatCents": 44900,
+        "vcpu": 4,
+        "ramGb": 4,
+        "storageGb": 128
+      },
+      {
+        "id": "virtualservers-6gb",
+        "priceInclVatCents": 64900,
+        "vcpu": 6,
+        "ramGb": 6,
+        "storageGb": 160
+      },
+      {
+        "id": "virtualservers-8gb",
+        "priceInclVatCents": 84900,
+        "vcpu": 8,
+        "ramGb": 8,
+        "storageGb": 320
+      },
+      {
+        "id": "virtualservers-16gb",
+        "priceInclVatCents": 134900,
+        "vcpu": 8,
+        "ramGb": 16,
+        "storageGb": 512
+      },
+      {
+        "id": "virtualservers-32gb",
+        "priceInclVatCents": 194900,
+        "vcpu": 8,
+        "ramGb": 32,
+        "storageGb": 640
+      },
+      {
+        "id": "virtualservers-64gb",
+        "priceInclVatCents": 294900,
+        "vcpu": 16,
+        "ramGb": 64,
+        "storageGb": 1024
+      },
+      {
+        "id": "virtualservers-128gb",
+        "priceInclVatCents": 494900,
+        "vcpu": 16,
+        "ramGb": 128,
+        "storageGb": 2048
+      }
+    ]
+  }
+]

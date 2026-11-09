@@ -1,0 +1,50 @@
+---
+import type { TierWinner } from '../lib/data';
+import { formatGb, formatPerGbRam, formatRand, formatStorage, storageLabel } from '../lib/format';
+
+interface Props {
+  winner: TierWinner;
+}
+
+const { winner } = Astro.props;
+const { tier, cheapest, bestValue, count } = winner;
+const sameWinner = cheapest.id === bestValue.id;
+---
+
+<article class="winner-card">
+  <div class="winner-tier">
+    <strong>{tier} GB+</strong>
+    <span>{count} plans</span>
+  </div>
+
+  <div>
+    <div class="winner-price">
+      {formatRand(cheapest.priceInclVatCents)} <small>/mo</small>
+    </div>
+    <a class="winner-provider" href={`/providers/${cheapest.provider}/`}>{cheapest.providerName}</a>
+    <div class="plan-sub">{cheapest.plan}</div>
+  </div>
+
+  <div class="winner-specs">
+    <span>{cheapest.vcpu} vCPU</span>
+    <span>{formatGb(cheapest.ramGb)} RAM</span>
+    <span>{formatStorage(cheapest.storageGb)} {storageLabel(cheapest.storageType)}</span>
+  </div>
+
+  <div class="badge-stack">
+    <span class="badge badge-success">Cheapest</span>
+    {sameWinner && <span class="badge badge-nvme">Best R/GB too</span>}
+  </div>
+
+  <div class="winner-foot">
+    <span>{formatPerGbRam(cheapest.pricePerGbRamCents)}</span>
+    <a href={`/?ram=${tier}#compare`}>See all →</a>
+  </div>
+
+  {!sameWinner && (
+    <p class="plan-sub">
+      Best per GB: <a class="provider-link" href={`/providers/${bestValue.provider}/`}>{bestValue.providerName}</a>{' '}
+      at {formatPerGbRam(bestValue.pricePerGbRamCents)}
+    </p>
+  )}
+</article>

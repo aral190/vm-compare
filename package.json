@@ -1,0 +1,36 @@
+{
+  "name": "vm-compare",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cheapest VPS and VM prices in South African data centres, compared weekly.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "validate": "tsx scripts/validate.ts",
+    "seed": "tsx scripts/seed.ts",
+    "build:data": "npm run validate",
+    "scrape": "tsx scripts/scrape.ts",
+    "scrape:dry": "tsx scripts/scrape.ts --dry-run",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.8",
+    "cheerio": "^1.2.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}

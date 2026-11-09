@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VM Compare">
+  <rect width="64" height="64" rx="14" fill="#0f766e"/>
+  <path d="M16 22h20a10 10 0 0 1 0 20H16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="16" cy="22" r="5" fill="#fff"/>
+  <circle cx="16" cy="42" r="5" fill="#fff"/>
+  <path d="M44 22v20M52 22v20" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"/>
+</svg>

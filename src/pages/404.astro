@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Page not found"
+  description="This page does not exist. Use the comparison table to find the cheapest VPS in South Africa."
+  canonicalPath="/404/"
+  noindex
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">404</span>
+      <h1>That page has moved on</h1>
+      <p class="hero-lede">
+        The URL you followed does not exist. The cheapest plans are always on the homepage, and the
+        full comparison table is one click away.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/#compare">Compare VPS prices</a>
+        <a class="button button-secondary" href="/providers/">Browse providers</a>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,63 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "domains-vps-2gb",
+        "priceInclVatCents": 20900,
+        "vcpu": 1,
+        "ramGb": 2,
+        "storageGb": 50
+      },
+      {
+        "id": "domains-vps-4gb",
+        "priceInclVatCents": 41900,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 100
+      },
+      {
+        "id": "domains-vps-8gb",
+        "priceInclVatCents": 82900,
+        "vcpu": 4,
+        "ramGb": 8,
+        "storageGb": 200
+      },
+      {
+        "id": "domains-vps-16gb",
+        "priceInclVatCents": 154900,
+        "vcpu": 6,
+        "ramGb": 16,
+        "storageGb": 400
+      },
+      {
+        "id": "domains-vps-24gb",
+        "priceInclVatCents": 225900,
+        "vcpu": 8,
+        "ramGb": 24,
+        "storageGb": 600
+      },
+      {
+        "id": "domains-vps-32gb",
+        "priceInclVatCents": 329900,
+        "vcpu": 12,
+        "ramGb": 32,
+        "storageGb": 1000
+      },
+      {
+        "id": "domains-vps-48gb",
+        "priceInclVatCents": 459900,
+        "vcpu": 16,
+        "ramGb": 48,
+        "storageGb": 1400
+      },
+      {
+        "id": "domains-vps-64gb",
+        "priceInclVatCents": 659900,
+        "vcpu": 24,
+        "ramGb": 64,
+        "storageGb": 2000
+      }
+    ]
+  }
+]

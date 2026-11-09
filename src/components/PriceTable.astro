@@ -1,0 +1,130 @@
+---
+import type { PlanWithMetrics } from '../lib/data';
+import { formatGb, formatPerGbRam, formatRand, formatStorage, storageLabel } from '../lib/format';
+import { featureInfo } from '../lib/features';
+
+interface Props {
+  plans: PlanWithMetrics[];
+  showRank?: boolean;
+}
+
+const { plans, showRank = true } = Astro.props;
+
+function topFeatures(features: string[]): { shown: string[]; extra: number } {
+  const preferred = ['nvme', 'ssd', 'epyc', 'backups', 'snapshots', 'one-click', 'api', 'ddos', 'ipv6', 'unlimited-bandwidth'];
+  const ordered = [
+    ...preferred.filter((key) => features.includes(key)),
+    ...features.filter((key) => !preferred.includes(key)),
+  ];
+  return { shown: ordered.slice(0, 4), extra: Math.max(0, ordered.length - 4) };
+}
+---
+
+<div class="table-note" aria-hidden="true">
+  <span>Prices shown per month, VAT inclusive</span>
+  <span>Sorted by default from cheapest</span>
+  <span>Archived plans are excluded</span>
+</div>
+
+<div class="table-wrap">
+  <div class="table-scroll">
+    <table class="price-table">
+      <thead>
+        <tr>
+          {showRank && <th scope="col">#</th>}
+          <th scope="col">Provider</th>
+          <th scope="col">Plan</th>
+          <th scope="col" class="num">vCPU</th>
+          <th scope="col" class="num">RAM</th>
+          <th scope="col">Storage</th>
+          <th scope="col">Traffic</th>
+          <th scope="col" class="num">Price / mo</th>
+          <th scope="col" class="num">R / GB RAM</th>
+          <th scope="col">Features</th>
+          <th scope="col"><span class="visually-hidden">Order</span></th>
+        </tr>
+      </thead>
+      <tbody id="plan-rows">
+        {plans.map((plan, index) => {
+          const { shown, extra } = topFeatures(plan.features);
+          return (
+            <tr
+              data-plan-id={plan.id}
+              data-provider={plan.provider}
+              data-ram={plan.ramGb}
+              data-vcpu={plan.vcpu}
+              data-storage={plan.storageType}
+              data-billing={plan.billingTerm}
+              data-price={plan.priceInclVatCents}
+              data-value={Math.round(plan.pricePerGbRamCents)}
+            >
+              {showRank && <td class="rank" data-label="#">{index + 1}</td>}
+              <td class="provider-cell" data-label="Provider">
+                <a class="provider-link" href={`/providers/${plan.provider}/`}>{plan.providerName}</a>
+                <span class="provider-sub">{plan.location}</span>
+              </td>
+              <td class="plan-cell" data-label="Plan">
+                <span class="plan-name">{plan.plan}</span>
+                <span class="plan-sub">
+                  {plan.status === 'archived'
+                    ? 'Archived · last known price'
+                    : plan.status === 'stale'
+                      ? 'Last known price'
+                      : 'Monthly'}
+                  {plan.billingTerm === 'annual' && plan.status === 'current' ? ' · annual commitment' : ''}
+                </span>
+              </td>
+              <td class="num spec" data-label="vCPU">{plan.vcpu}</td>
+              <td class="num spec" data-label="RAM">{formatGb(plan.ramGb)}</td>
+              <td class="storage-cell" data-label="Storage">
+                {formatStorage(plan.storageGb)}
+                <span class={`badge ${plan.storageType === 'nvme' ? 'badge-nvme' : plan.storageType === 'ssd' ? 'badge-ssd' : ''}`}>
+                  {storageLabel(plan.storageType)}
+                </span>
+              </td>
+              <td data-label="Traffic">{plan.bandwidth}</td>
+              <td class="price-cell" data-label="Price / mo">
+                <span class="price-main">{formatRand(plan.priceInclVatCents)}</span>
+                <span class="price-note">
+                  {plan.vatIncluded ? 'incl. VAT' : `listed ${formatRand(plan.priceAsListedCents)} excl.`}
+                  {plan.vatAssumed && (
+                    <span
+                      class="vat-flag"
+                      title="This provider does not state its VAT treatment on the pricing page. We grossed the listed price up by 15% for comparison."
+                    >*</span>
+                  )}
+                </span>
+              </td>
+              <td class="num pergb" data-label="R / GB RAM">{formatPerGbRam(plan.pricePerGbRamCents)}</td>
+              <td class="features-cell" data-label="Features">
+                <div class="badge-stack">
+                  {shown.map((feature) => (
+                    <span class="badge" title={featureInfo(feature).description}>{featureInfo(feature).short}</span>
+                  ))}
+                  {extra > 0 && <span class="badge badge-outline">+{extra}</span>}
+                </div>
+                {plan.status === 'stale' && <span class="badge badge-warn">Stale</span>}
+                {plan.status === 'archived' && <span class="badge badge-danger">Archived</span>}
+              </td>
+              <td data-label="Order">
+                <a class="order-link" href={plan.url} target="_blank" rel="noopener">
+                  View <span aria-hidden="true">→</span>
+                </a>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <div class="empty-state" id="empty-state" hidden>
+    <strong>No plans match those filters</strong>
+    Try lowering the minimum RAM or vCPU, or clearing the provider filter.
+  </div>
+</div>
+
+<p class="plan-sub" style="margin-top: 10px;">
+  All prices are monthly and include 15% VAT. A <span class="vat-flag">*</span> marks a provider
+  that does not state its VAT treatment on the pricing page; we grossed the listed price up by 15%
+  for comparison. See the <a href="/methodology/">methodology</a>.
+</p>

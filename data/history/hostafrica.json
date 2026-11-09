@@ -1,0 +1,70 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "hostafrica-c1",
+        "priceInclVatCents": 13000,
+        "vcpu": 1,
+        "ramGb": 1,
+        "storageGb": 20
+      },
+      {
+        "id": "hostafrica-c2",
+        "priceInclVatCents": 21500,
+        "vcpu": 1,
+        "ramGb": 2,
+        "storageGb": 50
+      },
+      {
+        "id": "hostafrica-c3",
+        "priceInclVatCents": 30000,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 80
+      },
+      {
+        "id": "hostafrica-c4",
+        "priceInclVatCents": 43000,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 100
+      },
+      {
+        "id": "hostafrica-c5",
+        "priceInclVatCents": 86000,
+        "vcpu": 4,
+        "ramGb": 8,
+        "storageGb": 200
+      },
+      {
+        "id": "hostafrica-c6",
+        "priceInclVatCents": 129000,
+        "vcpu": 6,
+        "ramGb": 12,
+        "storageGb": 300
+      },
+      {
+        "id": "hostafrica-c7",
+        "priceInclVatCents": 172000,
+        "vcpu": 8,
+        "ramGb": 16,
+        "storageGb": 400
+      },
+      {
+        "id": "hostafrica-c8",
+        "priceInclVatCents": 292000,
+        "vcpu": 12,
+        "ramGb": 32,
+        "storageGb": 500
+      },
+      {
+        "id": "hostafrica-c9",
+        "priceInclVatCents": 490000,
+        "vcpu": 16,
+        "ramGb": 64,
+        "storageGb": 500
+      }
+    ]
+  }
+]

@@ -1,0 +1,140 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "cloudafrica-ca-2gb-std-1217",
+        "priceInclVatCents": 24610,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 50
+      },
+      {
+        "id": "cloudafrica-ca-4gb-std-1217",
+        "priceInclVatCents": 43815,
+        "vcpu": 4,
+        "ramGb": 4,
+        "storageGb": 50
+      },
+      {
+        "id": "cloudafrica-ca-6gb-std-1217",
+        "priceInclVatCents": 66125,
+        "vcpu": 6,
+        "ramGb": 6,
+        "storageGb": 72
+      },
+      {
+        "id": "cloudafrica-ca-8gb-std-1217",
+        "priceInclVatCents": 89125,
+        "vcpu": 8,
+        "ramGb": 8,
+        "storageGb": 96
+      },
+      {
+        "id": "cloudafrica-ca-12gb-std-1217",
+        "priceInclVatCents": 138000,
+        "vcpu": 8,
+        "ramGb": 12,
+        "storageGb": 192
+      },
+      {
+        "id": "cloudafrica-ca-16gb-himem-1217",
+        "priceInclVatCents": 104305,
+        "vcpu": 2,
+        "ramGb": 16,
+        "storageGb": 50
+      },
+      {
+        "id": "cloudafrica-ca-16gb-std-1217",
+        "priceInclVatCents": 187105,
+        "vcpu": 8,
+        "ramGb": 16,
+        "storageGb": 288
+      },
+      {
+        "id": "cloudafrica-ca-8v24-std",
+        "priceInclVatCents": 302450,
+        "vcpu": 8,
+        "ramGb": 24,
+        "storageGb": 500
+      },
+      {
+        "id": "cloudafrica-ca-24gb-std-1217",
+        "priceInclVatCents": 304175,
+        "vcpu": 12,
+        "ramGb": 24,
+        "storageGb": 384
+      },
+      {
+        "id": "cloudafrica-ca-32gb-himem-1217",
+        "priceInclVatCents": 208840,
+        "vcpu": 2,
+        "ramGb": 32,
+        "storageGb": 50
+      },
+      {
+        "id": "cloudafrica-ca-32gb-std-1217",
+        "priceInclVatCents": 366850,
+        "vcpu": 12,
+        "ramGb": 32,
+        "storageGb": 512
+      },
+      {
+        "id": "cloudafrica-ca-8v32-std",
+        "priceInclVatCents": 405260,
+        "vcpu": 8,
+        "ramGb": 32,
+        "storageGb": 750
+      },
+      {
+        "id": "cloudafrica-ca-10v32-std",
+        "priceInclVatCents": 479320,
+        "vcpu": 10,
+        "ramGb": 32,
+        "storageGb": 1000
+      },
+      {
+        "id": "cloudafrica-ca-48gb-std-1217",
+        "priceInclVatCents": 547630,
+        "vcpu": 16,
+        "ramGb": 48,
+        "storageGb": 768
+      },
+      {
+        "id": "cloudafrica-ca-60gb-himem-1217",
+        "priceInclVatCents": 399165,
+        "vcpu": 4,
+        "ramGb": 60,
+        "storageGb": 50
+      },
+      {
+        "id": "cloudafrica-ca-12v64-std",
+        "priceInclVatCents": 662285,
+        "vcpu": 12,
+        "ramGb": 64,
+        "storageGb": 1000
+      },
+      {
+        "id": "cloudafrica-ca-64gb-std-1217",
+        "priceInclVatCents": 764750,
+        "vcpu": 20,
+        "ramGb": 64,
+        "storageGb": 1152
+      },
+      {
+        "id": "cloudafrica-ca-100gb-himem-1217",
+        "priceInclVatCents": 809025,
+        "vcpu": 8,
+        "ramGb": 100,
+        "storageGb": 200
+      },
+      {
+        "id": "cloudafrica-ca-200gb-himem-1217",
+        "priceInclVatCents": 1591370,
+        "vcpu": 16,
+        "ramGb": 200,
+        "storageGb": 340
+      }
+    ]
+  }
+]

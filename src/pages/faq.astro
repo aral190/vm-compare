@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import { getLivePlans, getLastUpdated } from '../lib/data';
+import { formatDate, formatRand } from '../lib/format';
+import { CONTACT_EMAIL, SITE_URL } from '../lib/site';
+
+const plans = getLivePlans();
+const cheapest = plans[0];
+const lastUpdated = getLastUpdated();
+
+const faqs = [
+  {
+    question: 'What is the cheapest VPS in South Africa?',
+    answer: `As of ${formatDate(lastUpdated)}, the cheapest live plan in the comparison is ${cheapest.providerName} ${cheapest.plan} at ${formatRand(cheapest.priceInclVatCents)} per month including VAT, with ${cheapest.vcpu} vCPU, ${cheapest.ramGb} GB RAM and ${cheapest.storageGb} GB ${cheapest.storageType.toUpperCase()} storage.`,
+  },
+  {
+    question: 'Are the prices on this site VAT inclusive?',
+    answer: 'Yes. Every price in the comparison is shown in South African rand including 15% VAT. Where a provider advertises a VAT-exclusive price, we multiply it by 1.15 and show the original as-listed price underneath.',
+  },
+  {
+    question: 'Why is the price different from the provider’s website?',
+    answer: 'There are three common reasons: the provider quotes excluding VAT, the provider’s headline price is a first-month or limited-time promotion, or the provider has changed its price since our last check. We use the recurring monthly price and normalise VAT, and we show the as-listed price so you can compare.',
+  },
+  {
+    question: 'What is the difference between NVMe and SSD?',
+    answer: 'Both are solid-state storage. NVMe drives connect over PCIe and are usually much faster than SATA SSDs, especially for databases and many small reads and writes. For a busy database or high-traffic site, NVMe is worth paying a little more for.',
+  },
+  {
+    question: 'How often is the data updated?',
+    answer: 'Every provider is checked automatically once a week. The date at the top of the homepage and on each provider page shows the last successful check. If a page cannot be read, the last known price is kept and marked as stale.',
+  },
+  {
+    question: 'Do you earn commission from providers?',
+    answer: 'No. Providers cannot pay for placement or a better rank. If affiliate links are introduced later, they will be clearly disclosed and will not influence the ordering.',
+  },
+  {
+    question: 'Which providers are included?',
+    answer: 'We include providers with a real, orderable VPS or VM product hosted in a South African data centre. International providers with a Johannesburg region are kept in a separate category so they do not distort the local comparison.',
+  },
+  {
+    question: 'Is a South African VPS better than a European one?',
+    answer: 'For South African users, usually yes. A local server gives much lower latency, which makes a noticeable difference for SSH, databases, APIs and interactive sites. European servers can still be cheaper for bulk storage or non-latency-sensitive batch work.',
+  },
+  {
+    question: 'How do I get my VPS provider listed?',
+    answer: `Email ${CONTACT_EMAIL} with your company name, pricing page URL and plan list. We verify that the product is orderable and hosted in South Africa before adding it.`,
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'FAQ', item: `${SITE_URL}/faq/` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  },
+];
+---
+
+<Base
+  title="VPS South Africa FAQ — prices, VAT, NVMe and updates"
+  description="Answers to common questions about cheap VPS hosting in South Africa: VAT treatment, promotional pricing, NVMe vs SSD, update frequency and how to get a provider listed."
+  canonicalPath="/faq/"
+  jsonLd={structuredData}
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">FAQ</span>
+      <h1>VPS South Africa questions</h1>
+      <p class="hero-lede">
+        The practical questions behind the comparison: how prices are normalised, what the
+        differences between plans mean, and how to get a provider added.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="faq-list">
+        {faqs.map((faq) => (
+          <details class="faq-item">
+            <summary>{faq.question}</summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <p class="plan-sub" style="margin-top: 22px;">
+        Still stuck? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> or read the
+        <a href="/methodology/">full methodology</a>.
+      </p>
+    </div>
+  </section>
+</Base>

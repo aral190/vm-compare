@@ -1,0 +1,202 @@
+---
+import Base from '../layouts/Base.astro';
+import FilterBar from '../components/FilterBar.astro';
+import PriceTable from '../components/PriceTable.astro';
+import WinnerCard from '../components/WinnerCard.astro';
+import { getLivePlans, getProviders, getTierWinners, getLastUpdated } from '../lib/data';
+import { formatDate, formatRand } from '../lib/format';
+import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/site';
+
+const plans = getLivePlans();
+const providers = getProviders()
+  .filter((provider) => plans.some((plan) => plan.provider === provider.slug))
+  .sort((a, b) => a.name.localeCompare(b.name));
+const winners = getTierWinners([1, 2, 4, 8, 16, 32]);
+const lastUpdated = getLastUpdated();
+const providerCount = providers.length;
+const cheapestOverall = plans[0];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: SITE_DESCRIPTION,
+    inLanguage: 'en-ZA',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Cheapest VPS plans in South Africa',
+    description: 'VPS and VM plans hosted in South African data centres, ranked by price.',
+    numberOfItems: Math.min(plans.length, 10),
+    itemListElement: plans.slice(0, 10).map((plan, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: `${plan.providerName} ${plan.plan}`,
+        description: `${plan.vcpu} vCPU, ${plan.ramGb} GB RAM, ${plan.storageGb} GB ${plan.storageType.toUpperCase()}`,
+        brand: { '@type': 'Brand', name: plan.providerName },
+        offers: {
+          '@type': 'Offer',
+          price: (plan.priceInclVatCents / 100).toFixed(2),
+          priceCurrency: 'ZAR',
+          availability: 'https://schema.org/InStock',
+          url: plan.url,
+        },
+      },
+    })),
+  },
+];
+---
+
+<Base
+  title="Cheapest VPS in South Africa (2026) — Compare VM prices"
+  description={`Compare ${plans.length} VPS and VM plans from ${providerCount} providers hosted in South Africa. Cheapest 1 GB, 2 GB, 4 GB, 8 GB, 16 GB and 32 GB plans, normalised to VAT-inclusive rand and updated weekly.`}
+  canonicalPath="/"
+  jsonLd={structuredData}
+>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow"><span class="dot"></span>Updated {formatDate(lastUpdated)}</span>
+      <h1>The cheapest VPS in South Africa, <em>ranked</em>.</h1>
+      <p class="hero-lede">
+        We track public VPS and VM prices from South African data centres every week, normalise
+        every price to VAT-inclusive rand, and rank the plans that give you the most resources for
+        the least money.
+      </p>
+
+      <div class="hero-stats">
+        <span class="stat-pill"><strong>{providerCount}</strong> providers</span>
+        <span class="stat-pill"><strong>{plans.length}</strong> live plans</span>
+        <span class="stat-pill">Prices <strong>incl. VAT</strong></span>
+        <span class="stat-pill">Cheapest from <strong>{formatRand(cheapestOverall.priceInclVatCents)}/mo</strong></span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="#compare">Compare all plans</a>
+        <a class="button button-secondary" href="/methodology/">How ranking works</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Cheapest per category</span>
+          <h2>The best deal at every size</h2>
+          <p>
+            Each card shows the cheapest plan with at least that much RAM, plus the best price per
+            GB within that size class. Where a different plan wins on value, we call it out.
+          </p>
+        </div>
+        <a class="button button-ghost" href="#compare">Jump to the full table →</a>
+      </div>
+
+      <div class="winner-grid">
+        {winners.map((winner) => <WinnerCard winner={winner} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section compare" id="compare">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Full comparison</span>
+          <h2>Every plan, filterable</h2>
+          <p>
+            Filter by RAM, vCPU, storage type or provider. The filters update the URL, so you can
+            bookmark or share a specific comparison.
+          </p>
+        </div>
+      </div>
+
+      <FilterBar providers={providers} />
+      <PriceTable plans={plans} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">International</span>
+          <h2>Global providers with a Johannesburg region</h2>
+          <p>
+            Vultr and Akamai/Linode also run infrastructure in Johannesburg. They bill in US dollars
+            and often by the hour, so their plans are kept in a separate comparison rather than mixed
+            into the rand-denominated South African table.
+          </p>
+        </div>
+        <a class="button button-secondary" href="/international-vps-south-africa/">Compare JNB plans →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Methodology</span>
+          <h2>Three rules keep the comparison honest</h2>
+        </div>
+      </div>
+
+      <div class="winner-grid">
+        <article class="provider-card">
+          <span class="badge badge-nvme">Rule 1</span>
+          <h3 style="margin: 10px 0 6px;">Prices include VAT</h3>
+          <p class="plan-sub">
+            Providers quote inconsistently. We gross up VAT-exclusive prices by 15% so the number
+            you see matches what you pay. The as-listed price is always shown underneath.
+          </p>
+        </article>
+
+        <article class="provider-card">
+          <span class="badge badge-nvme">Rule 2</span>
+          <h3 style="margin: 10px 0 6px;">Renewal prices, not teasers</h3>
+          <p class="plan-sub">
+            First-month discounts and limited-time sales are ignored. We use the recurring monthly
+            price, because that is what you pay after the promotion ends.
+          </p>
+        </article>
+
+        <article class="provider-card">
+          <span class="badge badge-nvme">Rule 3</span>
+          <h3 style="margin: 10px 0 6px;">Resource value, not just price</h3>
+          <p class="plan-sub">
+            A cheap plan with 1 GB of RAM is not the same as a cheap plan with 8 GB. We show price
+            per GB of RAM and let you filter by the resources you actually need.
+          </p>
+        </article>
+      </div>
+
+      <p class="plan-sub" style="margin-top: 16px;">
+        Price is the starting point, not the whole story. Backups, NVMe, support and data-centre
+        location all matter. Read the <a href="/methodology/">full methodology</a> or the
+        <a href="/faq/">FAQ</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <h2>Run a South African VPS provider?</h2>
+          <p>
+            If you host VMs in South Africa and your public pricing belongs in this comparison,
+            email us with your plan list and we will verify and add it.
+          </p>
+        </div>
+        <a class="button button-primary" href={`mailto:${CONTACT_EMAIL}?subject=Add%20my%20VPS%20provider%20to%20VM%20Compare`}>
+          Email {CONTACT_EMAIL}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

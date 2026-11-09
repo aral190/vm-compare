@@ -1,0 +1,42 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "webtelecoms-micro",
+        "priceInclVatCents": 5900,
+        "vcpu": 1,
+        "ramGb": 0.75,
+        "storageGb": 8
+      },
+      {
+        "id": "webtelecoms-lite",
+        "priceInclVatCents": 9900,
+        "vcpu": 1,
+        "ramGb": 1,
+        "storageGb": 20
+      },
+      {
+        "id": "webtelecoms-bronze",
+        "priceInclVatCents": 19900,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 50
+      },
+      {
+        "id": "webtelecoms-silver",
+        "priceInclVatCents": 39900,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 100
+      },
+      {
+        "id": "webtelecoms-gold",
+        "priceInclVatCents": 49900,
+        "vcpu": 4,
+        "ramGb": 4,
+        "storageGb": 150
+      }
+    ]
+  }
+]

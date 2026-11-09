@@ -1,0 +1,191 @@
+---
+import type { Provider } from '../lib/schema';
+
+interface Props {
+  providers: Provider[];
+}
+
+const { providers } = Astro.props;
+---
+
+<form class="filter-bar" id="plan-filters" aria-label="Filter VPS plans">
+  <div class="filter-grid">
+    <div class="field">
+      <label for="filter-ram">Minimum RAM</label>
+      <select id="filter-ram" name="ram">
+        <option value="">Any RAM</option>
+        <option value="1">1 GB+</option>
+        <option value="2">2 GB+</option>
+        <option value="4">4 GB+</option>
+        <option value="8">8 GB+</option>
+        <option value="16">16 GB+</option>
+        <option value="32">32 GB+</option>
+        <option value="64">64 GB+</option>
+        <option value="128">128 GB+</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="filter-vcpu">Minimum vCPU</label>
+      <select id="filter-vcpu" name="vcpu">
+        <option value="">Any vCPU</option>
+        <option value="1">1+</option>
+        <option value="2">2+</option>
+        <option value="4">4+</option>
+        <option value="6">6+</option>
+        <option value="8">8+</option>
+        <option value="16">16+</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="filter-storage">Storage</label>
+      <select id="filter-storage" name="storage">
+        <option value="">Any storage</option>
+        <option value="nvme">NVMe only</option>
+        <option value="ssd">SSD only</option>
+      </select>
+    </div>
+
+    <div class="field field-provider">
+      <label for="filter-provider">Provider</label>
+      <select id="filter-provider" name="provider">
+        <option value="">All providers</option>
+        {providers.map((provider) => (
+          <option value={provider.slug}>{provider.name}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="field field-sort">
+      <label for="filter-sort">Sort by</label>
+      <select id="filter-sort" name="sort">
+        <option value="price-asc">Lowest price</option>
+        <option value="value-asc">Best price per GB RAM</option>
+        <option value="ram-desc">Most RAM</option>
+        <option value="vcpu-desc">Most vCPU</option>
+        <option value="storage-desc">Most storage</option>
+      </select>
+    </div>
+
+    <div class="field field-check">
+      <input type="checkbox" id="filter-monthly" name="monthly" />
+      <label for="filter-monthly">Monthly billing only</label>
+    </div>
+  </div>
+
+  <div class="filter-foot">
+    <span>Showing <strong id="filter-count">all plans</strong> · prices include VAT</span>
+    <div class="filter-actions">
+      <button class="button button-ghost" type="button" id="reset-filters">Reset</button>
+    </div>
+  </div>
+</form>
+
+<script>
+  function initFilters() {
+    const form = document.querySelector<HTMLFormElement>('#plan-filters');
+    const tbody = document.querySelector<HTMLTableSectionElement>('#plan-rows');
+    const empty = document.querySelector<HTMLElement>('#empty-state');
+    const count = document.querySelector<HTMLElement>('#filter-count');
+    const reset = document.querySelector<HTMLButtonElement>('#reset-filters');
+    if (!form || !tbody || !count) return;
+
+    const rowsBody: HTMLTableSectionElement = tbody;
+    const countNode: HTMLElement = count;
+    const rows = Array.from(rowsBody.querySelectorAll<HTMLTableRowElement>('tr[data-plan-id]'));
+    const params = new URLSearchParams(window.location.search);
+
+    const ram = form.elements.namedItem('ram') as HTMLSelectElement;
+    const vcpu = form.elements.namedItem('vcpu') as HTMLSelectElement;
+    const storage = form.elements.namedItem('storage') as HTMLSelectElement;
+    const provider = form.elements.namedItem('provider') as HTMLSelectElement;
+    const sort = form.elements.namedItem('sort') as HTMLSelectElement;
+    const monthly = form.elements.namedItem('monthly') as HTMLInputElement;
+
+    function setSelect(select: HTMLSelectElement, value: string | null) {
+      if (!value) return;
+      if (Array.from(select.options).some((option) => option.value === value)) select.value = value;
+    }
+
+    setSelect(ram, params.get('ram'));
+    setSelect(vcpu, params.get('vcpu'));
+    setSelect(storage, params.get('storage'));
+    setSelect(provider, params.get('provider'));
+    setSelect(sort, params.get('sort'));
+    monthly.checked = params.get('monthly') === '1';
+
+    function apply() {
+      const minRam = Number(ram.value) || 0;
+      const minVcpu = Number(vcpu.value) || 0;
+      const storageType = storage.value;
+      const providerSlug = provider.value;
+      const monthlyOnly = monthly.checked;
+
+      let visible = 0;
+      for (const row of rows) {
+        const show =
+          Number(row.dataset.ram) >= minRam &&
+          Number(row.dataset.vcpu) >= minVcpu &&
+          (!storageType || row.dataset.storage === storageType) &&
+          (!providerSlug || row.dataset.provider === providerSlug) &&
+          (!monthlyOnly || row.dataset.billing === 'monthly');
+
+        row.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      const direction = sort.value;
+      const sorted = [...rows].sort((a, b) => {
+        const priceA = Number(a.dataset.price);
+        const priceB = Number(b.dataset.price);
+        switch (direction) {
+          case 'value-asc':
+            return Number(a.dataset.value) - Number(b.dataset.value) || priceA - priceB;
+          case 'ram-desc':
+            return Number(b.dataset.ram) - Number(a.dataset.ram) || priceA - priceB;
+          case 'vcpu-desc':
+            return Number(b.dataset.vcpu) - Number(a.dataset.vcpu) || priceA - priceB;
+          case 'storage-desc':
+            return Number(b.dataset.storage) - Number(a.dataset.storage) || priceA - priceB;
+          default:
+            return priceA - priceB;
+        }
+      });
+
+      for (const row of sorted) rowsBody.appendChild(row);
+
+      let rank = 1;
+      for (const row of sorted) {
+        if (row.hidden) continue;
+        const cell = row.querySelector<HTMLElement>('.rank');
+        if (cell) cell.textContent = String(rank);
+        rank += 1;
+      }
+
+      countNode.textContent = `${visible} plan${visible === 1 ? '' : 's'}`;
+      if (empty) empty.hidden = visible !== 0;
+
+      const next = new URLSearchParams();
+      if (ram.value) next.set('ram', ram.value);
+      if (vcpu.value) next.set('vcpu', vcpu.value);
+      if (storage.value) next.set('storage', storage.value);
+      if (provider.value) next.set('provider', provider.value);
+      if (sort.value !== 'price-asc') next.set('sort', sort.value);
+      if (monthly.checked) next.set('monthly', '1');
+      const query = next.toString();
+      window.history.replaceState(null, '', query ? `?${query}#compare` : '#compare');
+    }
+
+    form.addEventListener('change', apply);
+    form.addEventListener('submit', (event) => event.preventDefault());
+    reset?.addEventListener('click', () => {
+      form.reset();
+      apply();
+    });
+
+    apply();
+  }
+
+  initFilters();
+</script>

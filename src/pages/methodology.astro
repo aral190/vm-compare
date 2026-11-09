@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import { getLivePlans, getLastUpdated } from '../lib/data';
+import { formatDate } from '../lib/format';
+import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from '../lib/site';
+
+const plans = getLivePlans();
+const lastUpdated = getLastUpdated();
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Methodology',
+  description: 'How VM Compare South Africa collects, normalises and ranks VPS prices.',
+  url: `${SITE_URL}/methodology/`,
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+  dateModified: lastUpdated,
+};
+---
+
+<Base
+  title="Methodology — how we compare VPS prices in South Africa"
+  description="How VM Compare collects VPS prices, converts them to VAT-inclusive rand, ignores promotional teasers and ranks plans by resource value."
+  canonicalPath="/methodology/"
+  jsonLd={structuredData}
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">Methodology</span>
+      <h1>How we compare VPS prices</h1>
+      <p class="hero-lede">
+        The goal is simple: make it possible to compare a R199 plan from one provider with a R419
+        plan from another without doing VAT maths or decoding marketing copy. Here is exactly how
+        we do it.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>What we collect</h2>
+      <p>
+        For every plan we record the provider, plan name, vCPU count, RAM, storage size and type
+        (NVMe, SSD or HDD), bandwidth, monthly price, billing term, setup fee, IPv4 address count,
+        location and the features the provider advertises. We also keep the date each plan was last
+        checked and a price-history snapshot per provider.
+      </p>
+      <p>
+        The current dataset contains <strong>{plans.length} live plans</strong> across the providers
+        listed on the <a href="/providers/">providers page</a>. The last successful check was
+        {formatDate(lastUpdated)}.
+      </p>
+
+      <h2>VAT normalisation</h2>
+      <p>
+        South African providers are inconsistent about VAT. Some advertise prices including VAT,
+        some excluding it, and some do not say. We convert every price to <strong>VAT-inclusive
+        rand</strong> at the standard 15% rate:
+      </p>
+      <ul>
+        <li>If the provider says the price includes VAT, we leave it unchanged.</li>
+        <li>If the provider says the price excludes VAT, we multiply by 1.15.</li>
+        <li>If the provider does not state a treatment, we assume the price excludes VAT, multiply by 1.15 and mark the row with an asterisk.</li>
+      </ul>
+      <p>
+        The price exactly as advertised is always stored and shown underneath the comparison price,
+        so you can check our arithmetic against the provider's page.
+      </p>
+
+      <h2>Promotions and billing terms</h2>
+      <p>
+        A first-month discount is not a price. We ignore introductory promotions, limited-time sales
+        and free-domain incentives, and use the recurring monthly price instead. Where a provider
+        only sells on an annual commitment, we show the effective monthly price and note the
+        commitment in the plan row.
+      </p>
+
+      <h2>How the ranking works</h2>
+      <p>
+        The main table is sorted by absolute monthly price by default. That answers the simplest
+        question: which plan costs the least? You can re-sort by <strong>price per GB of RAM</strong>
+        to see which plan gives the most memory for your money, or filter by vCPU, storage type and
+        provider.
+      </p>
+      <p>
+        The category cards on the homepage find the cheapest plan with <em>at least</em> the stated
+        RAM, so a 6 GB plan can win the 4 GB category if it is cheaper. We also calculate the best
+        price per GB in each category, because the cheapest sticker price is not always the best
+        value.
+      </p>
+
+      <div class="callout">
+        <strong>Price is not the whole story.</strong> A plan with NVMe storage, included backups,
+        local support and a Cape Town or Johannesburg location may be worth paying more for. Those
+        details are shown as feature badges and in the provider notes, not folded into a single
+        opaque score.
+      </div>
+
+      <h2>Freshness and corrections</h2>
+      <p>
+        Prices are checked automatically every week. If a provider page cannot be read, we keep the
+        last known price and mark it as stale rather than deleting the plan. If you spot a price
+        that is wrong or out of date, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        with the provider and plan name and we will correct it.
+      </p>
+
+      <h2>Independence</h2>
+      <p>
+        VM Compare is an independent comparison. We do not accept payment for placement or for a
+        better rank. If affiliate links are added in future, they will be disclosed and will not
+        affect the ranking. The site is a companion to the
+        <a href="https://number1.co.za" rel="noopener">number1.co.za</a> blog posts on South African
+        VPS pricing.
+      </p>
+    </div>
+  </section>
+</Base>

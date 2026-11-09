@@ -1,0 +1,154 @@
+---
+import Base from '../layouts/Base.astro';
+import { getHistory, getLivePlans, getPriceChanges, getProviders } from '../lib/data';
+import { formatDate, formatRand } from '../lib/format';
+import { SITE_NAME, SITE_URL } from '../lib/site';
+
+const changes = getPriceChanges();
+const providers = getProviders();
+const plans = getLivePlans();
+
+const rows = providers
+  .map((provider) => {
+    const history = getHistory(provider.slug);
+    const sorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
+    const live = plans.filter((plan) => plan.provider === provider.slug);
+    const cheapest = [...live].sort((a, b) => a.priceInclVatCents - b.priceInclVatCents)[0];
+    return {
+      provider,
+      snapshots: sorted.length,
+      first: sorted[0]?.date,
+      latest: sorted[sorted.length - 1]?.date,
+      cheapest,
+    };
+  })
+  .filter((row) => row.snapshots > 0)
+  .sort((a, b) => (b.latest ?? '').localeCompare(a.latest ?? ''));
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'VPS price updates in South Africa',
+  url: `${SITE_URL}/updates/`,
+  description: 'Weekly price changes and snapshots for VPS providers in South Africa.',
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+};
+---
+
+<Base
+  title="VPS price updates in South Africa"
+  description="Weekly snapshots and price changes for VPS providers hosted in South African data centres."
+  canonicalPath="/updates/"
+  jsonLd={structuredData}
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">Price updates</span>
+      <h1>VPS price updates</h1>
+      <p class="hero-lede">
+        Every weekly check is stored as a dated snapshot. This page records what changed, so you can
+        see whether a provider is trending up or down rather than only where it sits today.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Latest changes</span>
+          <h2>What moved</h2>
+        </div>
+      </div>
+
+      {changes.length === 0 ? (
+        <div class="callout">
+          <strong>No price changes recorded yet.</strong> The first snapshots were captured on
+          {formatDate(rows[0]?.latest ?? new Date().toISOString().slice(0, 10))}. Weekly comparisons
+          will appear here after the next automated run.
+        </div>
+      ) : (
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table class="price-table">
+              <thead>
+                <tr>
+                  <th scope="col">Provider</th>
+                  <th scope="col">Plan</th>
+                  <th scope="col">Change</th>
+                  <th scope="col" class="num">Old</th>
+                  <th scope="col" class="num">New</th>
+                  <th scope="col" class="num">%</th>
+                  <th scope="col">Checked</th>
+                </tr>
+              </thead>
+              <tbody>
+                {changes.map((change) => (
+                  <tr>
+                    <td data-label="Provider">
+                      <a class="provider-link" href={`/providers/${change.provider}/`}>{change.providerName}</a>
+                    </td>
+                    <td data-label="Plan">{change.plan}</td>
+                    <td data-label="Change">
+                      <span class={`badge ${change.changePercent < 0 ? 'badge-success' : 'badge-danger'}`}>
+                        {change.changePercent < 0 ? 'Price drop' : 'Price increase'}
+                      </span>
+                    </td>
+                    <td class="num" data-label="Old">{formatRand(change.oldPriceCents)}</td>
+                    <td class="num" data-label="New">{formatRand(change.newPriceCents)}</td>
+                    <td class="num" data-label="%">{change.changePercent.toFixed(1)}%</td>
+                    <td data-label="Checked">{formatDate(change.date)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-label">History</span>
+          <h2>Snapshots by provider</h2>
+          <p>
+            The first snapshot is the baseline. Each later row shows how many weekly checks we have
+            stored and the latest cheapest live plan.
+          </p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="price-table">
+            <thead>
+              <tr>
+                <th scope="col">Provider</th>
+                <th scope="col" class="num">Snapshots</th>
+                <th scope="col">First</th>
+                <th scope="col">Latest</th>
+                <th scope="col" class="num">Cheapest now</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr>
+                  <td data-label="Provider">
+                    <a class="provider-link" href={`/providers/${row.provider.slug}/`}>{row.provider.name}</a>
+                  </td>
+                  <td class="num" data-label="Snapshots">{row.snapshots}</td>
+                  <td data-label="First">{row.first ? formatDate(row.first) : '—'}</td>
+                  <td data-label="Latest">{row.latest ? formatDate(row.latest) : '—'}</td>
+                  <td class="num" data-label="Cheapest now">{row.cheapest ? formatRand(row.cheapest.priceInclVatCents) : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,28 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "1grid-small",
+        "priceInclVatCents": 25185,
+        "vcpu": 1,
+        "ramGb": 2,
+        "storageGb": 50
+      },
+      {
+        "id": "1grid-medium",
+        "priceInclVatCents": 47035,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 100
+      },
+      {
+        "id": "1grid-large",
+        "priceInclVatCents": 70035,
+        "vcpu": 3,
+        "ramGb": 6,
+        "storageGb": 150
+      }
+    ]
+  }
+]

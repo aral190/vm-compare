@@ -1,0 +1,49 @@
+[
+  {
+    "date": "2026-11-09",
+    "plans": [
+      {
+        "id": "cloud-ln0",
+        "priceInclVatCents": 14950,
+        "vcpu": 1,
+        "ramGb": 2,
+        "storageGb": 40
+      },
+      {
+        "id": "cloud-ln1",
+        "priceInclVatCents": 29900,
+        "vcpu": 2,
+        "ramGb": 4,
+        "storageGb": 80
+      },
+      {
+        "id": "cloud-ln2",
+        "priceInclVatCents": 59800,
+        "vcpu": 4,
+        "ramGb": 8,
+        "storageGb": 160
+      },
+      {
+        "id": "cloud-ln3",
+        "priceInclVatCents": 117300,
+        "vcpu": 6,
+        "ramGb": 16,
+        "storageGb": 360
+      },
+      {
+        "id": "cloud-ln4",
+        "priceInclVatCents": 184000,
+        "vcpu": 8,
+        "ramGb": 32,
+        "storageGb": 400
+      },
+      {
+        "id": "cloud-ln5",
+        "priceInclVatCents": 324300,
+        "vcpu": 10,
+        "ramGb": 64,
+        "storageGb": 600
+      }
+    ]
+  }
+]

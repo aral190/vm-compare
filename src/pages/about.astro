@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import { getLastUpdated, getLivePlans, getProviders } from '../lib/data';
+import { formatDate } from '../lib/format';
+import { CONTACT_EMAIL, GITHUB_URL, SITE_NAME, SITE_URL } from '../lib/site';
+
+const plans = getLivePlans();
+const providers = getProviders();
+const lastUpdated = getLastUpdated();
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: `About ${SITE_NAME}`,
+  url: `${SITE_URL}/about/`,
+  description: 'About VM Compare South Africa, an independent weekly comparison of VPS prices.',
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+};
+---
+
+<Base
+  title="About VM Compare South Africa"
+  description="VM Compare is an independent weekly comparison of VPS and VM prices in South African data centres, built as a companion to number1.co.za."
+  canonicalPath="/about/"
+  jsonLd={structuredData}
+>
+  <section class="provider-hero">
+    <div class="container">
+      <span class="section-label">About</span>
+      <h1>About VM Compare</h1>
+      <p class="hero-lede">
+        A small, independent project that answers one question properly: what is the cheapest VM
+        you can get in a South African data centre?
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>Why this exists</h2>
+      <p>
+        Shopping for a VPS in South Africa usually means opening a dozen provider sites, working out
+        which prices include VAT, spotting that the headline price is a first-month promotion, and
+        then comparing wildly different RAM, vCPU and storage combinations. That is tedious and easy
+        to get wrong.
+      </p>
+      <p>
+        VM Compare collects the public prices, normalises them to VAT-inclusive rand, ignores
+        promotional teasers, and presents the result in one filterable table. It is a companion to
+        the <a href="https://number1.co.za" rel="noopener">number1.co.za</a> articles on
+        <a href="https://number1.co.za/cheapest-vps-linux-server-vm-in-south-africa/" rel="noopener">cheapest VPS hosting in South Africa</a>
+        and
+        <a href="https://number1.co.za/best-bang-for-buck-linux-vps-vm-in-south-africa-2026/" rel="noopener">best bang for buck VPS in 2026</a>.
+      </p>
+
+      <h2>What is included</h2>
+      <p>
+        The current dataset has <strong>{plans.length} live plans</strong> from
+        <strong>{providers.length} providers</strong>, last checked {formatDate(lastUpdated)}. We
+        include providers with a real, orderable VPS product in a South African data centre.
+        International providers with a Johannesburg region are listed separately rather than mixed
+        into the local comparison.
+      </p>
+
+      <h2>Independence</h2>
+      <p>
+        No provider pays to be listed or ranked. The comparison is generated from public pricing
+        pages and a small amount of manual verification. If affiliate links are added later, they
+        will be disclosed and will not change the ordering.
+      </p>
+
+      <h2>Corrections</h2>
+      <p>
+        Prices change, promotions end, and pages get redesigned. If you spot something wrong, email
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the provider, plan and a link,
+        and it will be fixed. The data pipeline and site source are public on
+        <a href={GITHUB_URL} rel="noopener">GitHub</a>.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Provider listing requests, corrections and general questions:
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+      </p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,108 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPlansByProvider, getProviders, getLastUpdated } from '../../lib/data';
+import { formatRand } from '../../lib/format';
+import { featureInfo } from '../../lib/features';
+import { SITE_URL } from '../../lib/site';
+
+const providers = getProviders().sort((a, b) => a.name.localeCompare(b.name));
+const byProvider = getPlansByProvider();
+const lastUpdated = getLastUpdated();
+
+function livePlans(slug: string) {
+  return (byProvider.get(slug) ?? []).filter((plan) => plan.status !== 'archived');
+}
+
+function vatLabel(vat: string) {
+  if (vat === 'incl') return 'VAT inclusive';
+  if (vat === 'excl') return 'VAT exclusive (grossed up)';
+  return 'VAT treatment assumed';
+}
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Providers', item: `${SITE_URL}/providers/` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'VPS providers in South Africa',
+    numberOfItems: providers.length,
+    itemListElement: providers.map((provider, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Organization',
+        name: provider.name,
+        url: provider.website,
+        areaServed: 'ZA',
+      },
+    })),
+  },
+];
+---
+
+<Base
+  title="VPS providers in South Africa — compared"
+  description={`Compare ${providers.length} VPS and VM providers with infrastructure in South Africa. See plan counts, cheapest prices, locations and features. Updated ${lastUpdated}.`}
+  canonicalPath="/providers/"
+  jsonLd={structuredData}
+>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow"><span class="dot"></span>{providers.length} providers tracked</span>
+      <h1>VPS providers in South Africa</h1>
+      <p class="hero-lede">
+        Every provider we track, with a direct link to its current plans, locations and the
+        qualitative details that do not fit in a price column.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="winner-grid">
+        {providers.map((provider) => {
+          const live = livePlans(provider.slug);
+          const all = byProvider.get(provider.slug) ?? [];
+          const cheapest = [...live].sort((a, b) => a.priceInclVatCents - b.priceInclVatCents)[0];
+          return (
+            <article class="provider-card">
+              <div class="winner-tier">
+                <strong><a class="provider-link" href={`/providers/${provider.slug}/`}>{provider.name}</a></strong>
+                <span>{live.length ? `${live.length} plans` : `${all.length} archived`}</span>
+              </div>
+
+              <p class="plan-sub" style="margin-top: 8px;">{provider.reputation}</p>
+
+              <div class="winner-specs" style="margin-top: 10px;">
+                <span>{provider.locations.join(' / ')}</span>
+                <span>{vatLabel(provider.vat)}</span>
+              </div>
+
+              <div class="badge-stack" style="margin-top: 10px;">
+                {provider.features.slice(0, 5).map((feature) => (
+                  <span class="badge" title={featureInfo(feature).description}>{featureInfo(feature).short}</span>
+                ))}
+              </div>
+
+              <div class="winner-foot">
+                <span>{cheapest ? <>From <strong>{formatRand(cheapest.priceInclVatCents)}/mo</strong></> : 'No live plans'}</span>
+                <a href={`/providers/${provider.slug}/`}>Details →</a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <p class="plan-sub" style="margin-top: 18px;">
+        Prices last checked {lastUpdated}. See the <a href="/methodology/">methodology</a> for how
+        VAT, promotions and billing terms are handled.
+      </p>
+    </div>
+  </section>
+</Base>
