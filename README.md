@@ -74,6 +74,19 @@ Money is stored as integer rand cents. Every plan keeps both `priceInclVatCents`
 - If every provider fails, `plans.json` is left untouched.
 - Plans that disappear from a provider page are marked `stale`; archived plans stay archived.
 
+## Outbound links
+
+Provider and partner links carry standard referral parameters:
+
+```text
+utm_source=vm-compare
+utm_medium=referral
+utm_campaign=<comparison-table | provider-page | international-jnb | about | footer | methodology>
+utm_content=<plan id or provider slug>
+```
+
+The helper lives in `src/lib/utm.ts`. It preserves any existing UTM values and leaves internal links and structured-data URLs unchanged.
+
 ## Adding a provider
 
 1. Add the provider to `data/providers.json` with `adapter: "html"` (or `manual`).

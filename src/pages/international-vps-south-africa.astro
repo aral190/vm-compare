@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import { formatRand } from '../lib/format';
 import { SITE_URL } from '../lib/site';
+import { slugify } from '../lib/slug';
+import { withUtm } from '../lib/utm';
 
 const RATE = 18.5;
 
@@ -144,7 +146,12 @@ const structuredData = [
               {rows.map((row) => (
                 <tr>
                   <td data-label="Provider">
-                    <a class="provider-link" href={row.providerUrl} target="_blank" rel="noopener">{row.provider}</a>
+                    <a
+                      class="provider-link"
+                      href={withUtm(row.providerUrl, { campaign: 'international-jnb', content: slugify(row.provider) })}
+                      target="_blank"
+                      rel="noopener"
+                    >{row.provider}</a>
                   </td>
                   <td data-label="Plan">{row.name}</td>
                   <td class="num" data-label="vCPU">{row.vcpu}</td>
@@ -154,7 +161,12 @@ const structuredData = [
                   <td class="num" data-label="USD / mo">${row.usd}</td>
                   <td class="num" data-label="≈ ZAR incl. VAT">{formatRand(row.zarInclVatCents)}</td>
                   <td data-label="Website">
-                    <a class="order-link" href={row.providerUrl} target="_blank" rel="noopener">View →</a>
+                    <a
+                      class="order-link"
+                      href={withUtm(row.providerUrl, { campaign: 'international-jnb', content: slugify(row.provider) })}
+                      target="_blank"
+                      rel="noopener"
+                    >View →</a>
                   </td>
                 </tr>
               ))}

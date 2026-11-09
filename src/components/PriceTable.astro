@@ -2,6 +2,7 @@
 import type { PlanWithMetrics } from '../lib/data';
 import { formatGb, formatPerGbRam, formatRand, formatStorage, storageLabel } from '../lib/format';
 import { featureInfo } from '../lib/features';
+import { withUtm } from '../lib/utm';
 
 interface Props {
   plans: PlanWithMetrics[];
@@ -128,7 +129,12 @@ function topFeatures(features: string[]): { shown: string[]; extra: number } {
                 {plan.status === 'archived' && <span class="badge badge-danger">Archived</span>}
               </td>
               <td data-label="Order">
-                <a class="order-link" href={plan.url} target="_blank" rel="noopener">
+                <a
+                  class="order-link"
+                  href={withUtm(plan.url, { campaign: 'comparison-table', content: plan.id })}
+                  target="_blank"
+                  rel="noopener"
+                >
                   View <span aria-hidden="true">→</span>
                 </a>
               </td>

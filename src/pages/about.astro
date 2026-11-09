@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { getLastUpdated, getLivePlans, getProviders } from '../lib/data';
 import { formatDate } from '../lib/format';
 import { CONTACT_EMAIL, GITHUB_URL, SITE_NAME, SITE_URL } from '../lib/site';
+import { withUtm } from '../lib/utm';
 
 const plans = getLivePlans();
 const providers = getProviders();
@@ -47,10 +48,10 @@ const structuredData = {
       <p>
         VM Compare collects the public prices, normalises them to VAT-inclusive rand, ignores
         promotional teasers, and presents the result in one filterable table. It is a companion to
-        the <a href="https://number1.co.za" rel="noopener">number1.co.za</a> articles on
-        <a href="https://number1.co.za/cheapest-vps-linux-server-vm-in-south-africa/" rel="noopener">cheapest VPS hosting in South Africa</a>
+        the <a href={withUtm('https://number1.co.za', { campaign: 'about', content: 'number1-home' })} rel="noopener">number1.co.za</a> articles on
+        <a href={withUtm('https://number1.co.za/cheapest-vps-linux-server-vm-in-south-africa/', { campaign: 'about', content: 'cheapest-vps' })} rel="noopener">cheapest VPS hosting in South Africa</a>
         and
-        <a href="https://number1.co.za/best-bang-for-buck-linux-vps-vm-in-south-africa-2026/" rel="noopener">best bang for buck VPS in 2026</a>.
+        <a href={withUtm('https://number1.co.za/best-bang-for-buck-linux-vps-vm-in-south-africa-2026/', { campaign: 'about', content: 'bang-for-buck-2026' })} rel="noopener">best bang for buck VPS in 2026</a>.
       </p>
 
       <h2>What is included</h2>
@@ -74,7 +75,7 @@ const structuredData = {
         Prices change, promotions end, and pages get redesigned. If you spot something wrong, email
         <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the provider, plan and a link,
         and it will be fixed. The data pipeline and site source are public on
-        <a href={GITHUB_URL} rel="noopener">GitHub</a>.
+        <a href={withUtm(GITHUB_URL, { campaign: 'about', content: 'github' })} rel="noopener">GitHub</a>.
       </p>
 
       <h2>Contact</h2>

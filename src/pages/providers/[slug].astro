@@ -6,6 +6,7 @@ import { getHistory, getPlansByProvider, getProviders } from '../../lib/data';
 import { formatDate, formatPerGbRam, formatRand } from '../../lib/format';
 import { featureInfo } from '../../lib/features';
 import { SITE_URL } from '../../lib/site';
+import { withUtm } from '../../lib/utm';
 import type { Provider } from '../../lib/schema';
 
 interface Props {
@@ -93,8 +94,18 @@ const structuredData = [
       <div class="provider-meta">
         {provider.locations.map((location) => <span class="badge badge-outline">{location}</span>)}
         <span class="badge badge-outline">{vatLabel}</span>
-        <a class="badge badge-outline" href={provider.website} target="_blank" rel="noopener">Website ↗</a>
-        <a class="badge badge-outline" href={provider.pricingUrl} target="_blank" rel="noopener">Pricing page ↗</a>
+        <a
+          class="badge badge-outline"
+          href={withUtm(provider.website, { campaign: 'provider-page', content: `${provider.slug}-website` })}
+          target="_blank"
+          rel="noopener"
+        >Website ↗</a>
+        <a
+          class="badge badge-outline"
+          href={withUtm(provider.pricingUrl, { campaign: 'provider-page', content: `${provider.slug}-pricing` })}
+          target="_blank"
+          rel="noopener"
+        >Pricing page ↗</a>
       </div>
     </div>
   </section>
