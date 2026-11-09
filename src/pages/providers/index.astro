@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getPlansByProvider, getProviders, getLastUpdated } from '../../lib/data';
 import { formatRand } from '../../lib/format';
-import { featureInfo } from '../../lib/features';
+import { featureBadgeClass, featureInfo, orderFeatures } from '../../lib/features';
 import { SITE_URL } from '../../lib/site';
 
 const providers = getProviders().sort((a, b) => a.name.localeCompare(b.name));
@@ -86,8 +86,10 @@ const structuredData = [
               </div>
 
               <div class="badge-stack" style="margin-top: 10px;">
-                {provider.features.slice(0, 5).map((feature) => (
-                  <span class="badge" title={featureInfo(feature).description}>{featureInfo(feature).short}</span>
+                {orderFeatures(provider.features).slice(0, 5).map((feature) => (
+                  <span class={`badge ${featureBadgeClass(feature)}`} title={featureInfo(feature).description}>
+                    {featureInfo(feature).short}
+                  </span>
                 ))}
               </div>
 

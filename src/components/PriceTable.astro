@@ -1,7 +1,7 @@
 ---
 import type { PlanWithMetrics } from '../lib/data';
 import { formatGb, formatPerGbRam, formatRand, formatStorage, storageLabel } from '../lib/format';
-import { featureInfo } from '../lib/features';
+import { featureBadgeClass, featureInfo } from '../lib/features';
 import { withUtm } from '../lib/utm';
 
 interface Props {
@@ -12,7 +12,21 @@ interface Props {
 const { plans, showRank = true } = Astro.props;
 
 function topFeatures(features: string[]): { shown: string[]; extra: number } {
-  const preferred = ['nvme', 'ssd', 'epyc', 'backups', 'snapshots', 'one-click', 'api', 'ddos', 'ipv6', 'unlimited-bandwidth'];
+  const preferred = [
+    'nvme',
+    'ssd',
+    'epyc',
+    'quick-support',
+    'slow-support',
+    'whatsapp-only',
+    'backups',
+    'snapshots',
+    'one-click',
+    'api',
+    'ddos',
+    'ipv6',
+    'unlimited-bandwidth',
+  ];
   const ordered = [
     ...preferred.filter((key) => features.includes(key)),
     ...features.filter((key) => !preferred.includes(key)),
@@ -121,7 +135,9 @@ function topFeatures(features: string[]): { shown: string[]; extra: number } {
               <td class="features-cell" data-label="Features">
                 <div class="badge-stack">
                   {shown.map((feature) => (
-                    <span class="badge" title={featureInfo(feature).description}>{featureInfo(feature).short}</span>
+                    <span class={`badge ${featureBadgeClass(feature)}`} title={featureInfo(feature).description}>
+                      {featureInfo(feature).short}
+                    </span>
                   ))}
                   {extra > 0 && <span class="badge badge-outline">+{extra}</span>}
                 </div>

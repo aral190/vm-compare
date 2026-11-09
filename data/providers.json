@@ -5,14 +5,27 @@
     "website": "https://rackzar.com",
     "pricingUrl": "https://rackzar.com/virtual-private-servers/standard-vps",
     "category": "sa",
-    "locations": ["Johannesburg", "Cape Town"],
+    "locations": [
+      "Johannesburg",
+      "Cape Town"
+    ],
     "vat": "incl",
     "adapter": "html",
     "fetchMode": "jina",
-    "features": ["nvme", "kvm", "backups", "ipv6", "firewall", "console", "root-access", "local-support"],
+    "features": [
+      "nvme",
+      "kvm",
+      "backups",
+      "ipv6",
+      "firewall",
+      "console",
+      "root-access",
+      "local-support",
+      "quick-support"
+    ],
     "reputation": "Proxmox partner with 400 Gbit peering, local support and dual-city presence in Johannesburg and Cape Town.",
     "affiliateUrl": null,
-    "notes": "Prices include VAT. Uses Cloudflare, so the scraper fetches through a reader proxy."
+    "notes": "Prices include VAT. Quick support response observed. Uses Cloudflare, so the scraper fetches through a reader proxy."
   },
   {
     "slug": "absolutehosting",
@@ -20,14 +33,27 @@
     "website": "https://absolutehosting.co.za",
     "pricingUrl": "https://client.absolutehosting.co.za/store/budget-vps-servers",
     "category": "sa",
-    "locations": ["Johannesburg"],
+    "locations": [
+      "Johannesburg"
+    ],
     "vat": "unknown",
     "adapter": "html",
     "fetchMode": "jina",
-    "features": ["nvme", "epyc", "kvm", "firewall", "console", "root-access", "unlimited-bandwidth", "local-support"],
+    "features": [
+      "nvme",
+      "epyc",
+      "kvm",
+      "firewall",
+      "console",
+      "root-access",
+      "unlimited-bandwidth",
+      "local-support",
+      "slow-support",
+      "whatsapp-only"
+    ],
     "reputation": "Long-running South African host with budget AMD EPYC VPS plans, instant upgrades and a self-managed firewall.",
     "affiliateUrl": null,
-    "notes": "VAT treatment not stated on the store page; treated as exclusive for comparison."
+    "notes": "VAT treatment not stated on the store page; treated as exclusive for comparison. Support was poor in our experience and only WhatsApp was available."
   },
   {
     "slug": "hostking",
@@ -35,11 +61,19 @@
     "website": "https://www.hostking.co.za",
     "pricingUrl": "https://www.hostking.co.za/vps-hosting",
     "category": "sa",
-    "locations": ["Johannesburg", "Cape Town"],
+    "locations": [
+      "Johannesburg",
+      "Cape Town"
+    ],
     "vat": "unknown",
     "adapter": "manual",
     "fetchMode": "direct",
-    "features": ["nvme", "kvm", "root-access", "local-support"],
+    "features": [
+      "nvme",
+      "kvm",
+      "root-access",
+      "local-support"
+    ],
     "reputation": "Established South African host. The VPS product is no longer advertised on the main site as of November 2026; the last known plan is retained for history.",
     "affiliateUrl": null,
     "notes": "VPS removed from the current site; plan archived and excluded from live rankings. Last verified via number1.co.za (September 2026)."
@@ -50,14 +84,23 @@
     "website": "https://cloud.co.za",
     "pricingUrl": "https://cloud.co.za/virtual-servers/",
     "category": "sa",
-    "locations": ["Johannesburg"],
-    "vat": "unknown",
+    "locations": [
+      "Johannesburg"
+    ],
+    "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["ssd", "kvm", "backups", "root-access", "local-support"],
+    "features": [
+      "ssd",
+      "kvm",
+      "backups",
+      "root-access",
+      "local-support",
+      "quick-support"
+    ],
     "reputation": "Trading as cloud.co.za and vps.co.za; KVM-based Linux cloud servers on local infrastructure with optional backup plans.",
     "affiliateUrl": null,
-    "notes": "First-month promotional prices are ignored; recurring monthly prices are used. VAT treatment not stated; treated as exclusive."
+    "notes": "Recurring monthly prices are used; first-month promotions are ignored. Prices include VAT. Quick response from the chat bot in our experience."
   },
   {
     "slug": "cloudafrica",
@@ -65,11 +108,20 @@
     "website": "https://www.cloudafrica.net",
     "pricingUrl": "https://www.cloudafrica.net/pricing/",
     "category": "sa",
-    "locations": ["Johannesburg"],
+    "locations": [
+      "Johannesburg"
+    ],
     "vat": "excl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["ssd", "kvm", "backups", "firewall", "api", "sla"],
+    "features": [
+      "ssd",
+      "kvm",
+      "backups",
+      "firewall",
+      "api",
+      "sla"
+    ],
     "reputation": "Enterprise cloud hosted at Teraco Isando with strong CPU performance in independent benchmarks.",
     "affiliateUrl": null,
     "notes": "Prices are explicitly quoted excluding VAT and converted to inclusive prices for comparison. Smallest current package is 16 GB; the older 4 GB plan is no longer listed."
@@ -80,11 +132,20 @@
     "website": "https://www.web-telecoms.co.za",
     "pricingUrl": "https://www.web-telecoms.co.za/hosting/virtual-private-servers-vps/",
     "category": "sa",
-    "locations": ["Cape Town", "Johannesburg"],
+    "locations": [
+      "Cape Town",
+      "Johannesburg"
+    ],
     "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["ssd", "kvm", "root-access", "dedicated-ip", "local-support"],
+    "features": [
+      "ssd",
+      "kvm",
+      "root-access",
+      "dedicated-ip",
+      "local-support"
+    ],
     "reputation": "Cape Town ISP and host running its own low-latency South African network with fixed, simple VPS packages.",
     "affiliateUrl": null,
     "notes": "Terms state invoices are issued inclusive of VAT."
@@ -95,14 +156,24 @@
     "website": "https://1-grid.com",
     "pricingUrl": "https://1-grid.com/vps-hosting/",
     "category": "sa",
-    "locations": ["Johannesburg", "Cape Town"],
-    "vat": "unknown",
+    "locations": [
+      "Johannesburg",
+      "Cape Town"
+    ],
+    "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["ssd", "kvm", "root-access", "managed-optional", "local-support"],
+    "features": [
+      "ssd",
+      "kvm",
+      "root-access",
+      "managed-optional",
+      "local-support",
+      "quick-support"
+    ],
     "reputation": "Large South African host offering self-managed or fully managed VPS. Support reputation is mixed.",
     "affiliateUrl": null,
-    "notes": "VAT treatment not stated on the pricing page; treated as exclusive for comparison. Annual billing discounts up to 10% are ignored."
+    "notes": "Pricing page prices include VAT. Quick response from the chat bot in our experience."
   },
   {
     "slug": "domains",
@@ -110,11 +181,22 @@
     "website": "https://www.domains.co.za",
     "pricingUrl": "https://www.domains.co.za/vps-hosting/",
     "category": "sa",
-    "locations": ["Johannesburg"],
+    "locations": [
+      "Johannesburg"
+    ],
     "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["nvme", "epyc", "kvm", "backups", "firewall", "console", "root-access", "sla"],
+    "features": [
+      "nvme",
+      "epyc",
+      "kvm",
+      "backups",
+      "firewall",
+      "console",
+      "root-access",
+      "sla"
+    ],
     "reputation": "Teraco Isando infrastructure with AMD EPYC, DDR5 and NVMe, a 99.9% SLA and off-site backups.",
     "affiliateUrl": null,
     "notes": "Pricing page states all prices include VAT."
@@ -125,11 +207,23 @@
     "website": "https://hostafrica.co.za",
     "pricingUrl": "https://hostafrica.co.za/servers/linux-vps-servers/",
     "category": "sa",
-    "locations": ["Johannesburg", "Cape Town"],
+    "locations": [
+      "Johannesburg",
+      "Cape Town"
+    ],
     "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["nvme", "kvm", "api", "firewall", "console", "root-access", "unlimited-bandwidth", "sla"],
+    "features": [
+      "nvme",
+      "kvm",
+      "api",
+      "firewall",
+      "console",
+      "root-access",
+      "unlimited-bandwidth",
+      "sla"
+    ],
     "reputation": "Pan-African host with South African data centres, API/CLI/MCP automation and unlimited traffic.",
     "affiliateUrl": null,
     "notes": "First-month 50% promotions are ignored; recurring prices are used. Terms state fees are quoted inclusive of VAT unless indicated otherwise."
@@ -140,11 +234,21 @@
     "website": "https://virtualservers.co.za",
     "pricingUrl": "https://virtualservers.co.za/linux-vps/",
     "category": "sa",
-    "locations": ["Cape Town"],
+    "locations": [
+      "Cape Town"
+    ],
     "vat": "incl",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["nvme", "epyc", "kvm", "root-access", "unlimited-bandwidth", "ddos", "local-support"],
+    "features": [
+      "nvme",
+      "epyc",
+      "kvm",
+      "root-access",
+      "unlimited-bandwidth",
+      "ddos",
+      "local-support"
+    ],
     "reputation": "AMD EPYC Genoa and NVMe with unmetered traffic. Cape Town capacity is available; Johannesburg is out of stock.",
     "affiliateUrl": null,
     "notes": "Pricing page states VAT-inclusive pricing. 10% annual discount ignored; monthly price used."
@@ -155,13 +259,25 @@
     "website": "https://ivecloud.co.za",
     "pricingUrl": "https://ivecloud.co.za/linux-vps-hosting/",
     "category": "sa",
-    "locations": ["Johannesburg", "Cape Town"],
+    "locations": [
+      "Johannesburg",
+      "Cape Town"
+    ],
     "vat": "unknown",
     "adapter": "html",
     "fetchMode": "direct",
-    "features": ["ssd", "kvm", "ddos", "console", "root-access", "dedicated-ip", "local-support"],
+    "features": [
+      "ssd",
+      "kvm",
+      "ddos",
+      "console",
+      "root-access",
+      "dedicated-ip",
+      "local-support",
+      "slow-support"
+    ],
     "reputation": "South African host with Johannesburg and Cape Town locations, DDoS protection and frequent 50% first-term promotions.",
     "affiliateUrl": null,
-    "notes": "List prices are used; the recurring 50% sale is ignored. VAT treatment not stated; treated as exclusive."
+    "notes": "List prices are used; the recurring 50% sale is ignored. VAT treatment not stated; treated as exclusive. Support took a long time to respond in our experience."
   }
 ]

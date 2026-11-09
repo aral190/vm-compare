@@ -85,6 +85,21 @@ export const FEATURES: Record<string, FeatureInfo> = {
     short: 'Local support',
     description: 'South African support during local business hours.',
   },
+  'quick-support': {
+    label: 'Quick support',
+    short: 'Quick support',
+    description: 'We received a quick response from the provider’s support or chat channel.',
+  },
+  'slow-support': {
+    label: 'Slow support',
+    short: 'Slow support',
+    description: 'Support took a long time to respond in our experience.',
+  },
+  'whatsapp-only': {
+    label: 'WhatsApp only',
+    short: 'WhatsApp only',
+    description: 'Support was only available via WhatsApp in our experience.',
+  },
   'managed-optional': {
     label: 'Managed option',
     short: 'Managed',
@@ -103,4 +118,42 @@ export function featureInfo(key: string): FeatureInfo {
     short: key,
     description: key,
   };
+}
+
+export function orderFeatures(features: string[]): string[] {
+  const priority = [
+    'quick-support',
+    'slow-support',
+    'whatsapp-only',
+    'nvme',
+    'ssd',
+    'epyc',
+    'backups',
+    'snapshots',
+    'one-click',
+    'api',
+    'ddos',
+    'ipv6',
+    'unlimited-bandwidth',
+  ];
+  return [
+    ...priority.filter((feature) => features.includes(feature)),
+    ...features.filter((feature) => !priority.includes(feature)),
+  ];
+}
+
+export function featureBadgeClass(key: string): string {
+  switch (key) {
+    case 'quick-support':
+      return 'badge-success';
+    case 'slow-support':
+    case 'whatsapp-only':
+      return 'badge-warn';
+    case 'nvme':
+      return 'badge-nvme';
+    case 'ssd':
+      return 'badge-ssd';
+    default:
+      return '';
+  }
 }

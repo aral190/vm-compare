@@ -4,7 +4,7 @@ import PriceTable from '../../components/PriceTable.astro';
 import Sparkline from '../../components/Sparkline.astro';
 import { getHistory, getPlansByProvider, getProviders } from '../../lib/data';
 import { formatDate, formatPerGbRam, formatRand } from '../../lib/format';
-import { featureInfo } from '../../lib/features';
+import { featureBadgeClass, featureInfo, orderFeatures } from '../../lib/features';
 import { SITE_URL } from '../../lib/site';
 import { withUtm } from '../../lib/utm';
 import type { Provider } from '../../lib/schema';
@@ -165,8 +165,10 @@ const structuredData = [
           <div class="provider-card">
             <h2 style="font-size: 1.1rem; margin-bottom: 10px;">Features</h2>
             <div class="badge-stack">
-              {provider.features.map((feature) => (
-                <span class="badge" title={featureInfo(feature).description}>{featureInfo(feature).label}</span>
+              {orderFeatures(provider.features).map((feature) => (
+                <span class={`badge ${featureBadgeClass(feature)}`} title={featureInfo(feature).description}>
+                  {featureInfo(feature).label}
+                </span>
               ))}
             </div>
           </div>

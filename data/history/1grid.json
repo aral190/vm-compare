@@ -4,21 +4,21 @@
     "plans": [
       {
         "id": "1grid-small",
-        "priceInclVatCents": 25185,
+        "priceInclVatCents": 21900,
         "vcpu": 1,
         "ramGb": 2,
         "storageGb": 50
       },
       {
         "id": "1grid-medium",
-        "priceInclVatCents": 47035,
+        "priceInclVatCents": 40900,
         "vcpu": 2,
         "ramGb": 4,
         "storageGb": 100
       },
       {
         "id": "1grid-large",
-        "priceInclVatCents": 70035,
+        "priceInclVatCents": 60900,
         "vcpu": 3,
         "ramGb": 6,
         "storageGb": 150
