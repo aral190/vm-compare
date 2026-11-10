@@ -7,6 +7,8 @@ export const providerSchema = z.object({
   name: z.string().min(1),
   website: z.url(),
   pricingUrl: z.url(),
+  /** Optional machine-readable feed used by the scraper instead of pricingUrl. */
+  feedUrl: z.url().optional(),
   category: z.enum(['sa', 'international']),
   locations: z.array(z.string()).default([]),
   vat: z.enum(['incl', 'excl', 'unknown']),

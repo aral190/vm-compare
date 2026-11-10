@@ -316,6 +316,89 @@ function parseVirtualServers(page: Page, provider: Provider): RawPlan[] {
   return dedupe(results);
 }
 
+/** Toblo: fixed EPYC KVM packages in Pretoria with NVMe and unlimited traffic. */
+function parseToblo(page: Page, provider: Provider): RawPlan[] {
+  const text = normalize(page.text);
+  const results: RawPlan[] = [];
+  const pattern = /(Starter|Basic|Professional|Enterprise|Ultimate) VPS R\s*([\d,]+)\s*\/month/g;
+
+  for (const { match, block } of blocks(text, pattern)) {
+    const vcpu = block.match(/(\d+)\s+CPU Cores?\s+\(AMD EPYC\)/);
+    const ram = block.match(/([\d.]+)\s*GB ECC RAM/);
+    const storage = block.match(/([\d.]+)\s*GB NVMe Storage/);
+    if (!vcpu || !ram || !storage) continue;
+    results.push(
+      plan(provider, {
+        id: `${provider.slug}-${match[1].toLowerCase()}`,
+        plan: `${match[1]} VPS`,
+        vcpu: Number(vcpu[1]),
+        ramGb: Number(ram[1]),
+        storageGb: Number(storage[1]),
+        storageType: 'nvme',
+        bandwidth: 'Unlimited',
+        price: price(match[2]),
+        location: 'Pretoria',
+      }),
+    );
+  }
+  return dedupe(results);
+}
+
+/**
+ * Axxess: prices and specs are served as JSON from the product display endpoint.
+ * The card's data-price is a four-month promotion; the struck-through
+ * product-oldprice is the regular monthly price, so that is what we use.
+ */
+function parseAxxess(page: Page, provider: Provider): RawPlan[] {
+  let payload: { productsHtml?: string };
+  try {
+    payload = JSON.parse(page.html) as { productsHtml?: string };
+  } catch {
+    return [];
+  }
+  if (!payload.productsHtml) return [];
+
+  const $ = cheerio.load(payload.productsHtml);
+  const results: RawPlan[] = [];
+
+  $('a[data-pid]').each((_, element) => {
+    const card = $(element);
+    const pid = card.attr('data-pid');
+    const planName = card.attr('data-pname');
+    if (!pid || !planName) return;
+
+    const regular = card.find('.product-oldprice').first().text();
+    const listed = regular || card.attr('data-price');
+    if (!listed) return;
+
+    const features = $(`#hosting-features-${pid}`);
+    const firstOption = (name: string) =>
+      normalize(features.find(`select[name="${name}"] option`).first().text());
+
+    const vcpu = firstOption('vps-vcpu').match(/(\d+)/)?.[1];
+    const ramGb = firstOption('vps-memory').match(/([\d.]+)/)?.[1];
+    const storageGb = firstOption('vps-ssd').match(/([\d.]+)/)?.[1];
+    const speed = firstOption('vps-speed');
+    if (!vcpu || !ramGb || !storageGb) return;
+
+    results.push(
+      plan(provider, {
+        id: `${provider.slug}-${slugify(planName)}`,
+        plan: planName,
+        vcpu: Number(vcpu),
+        ramGb: Number(ramGb),
+        storageGb: Number(storageGb),
+        storageType: 'ssd',
+        bandwidth: 'Unlimited',
+        price: price(listed),
+        location: 'South Africa',
+        notes: speed ? `Default network port: ${speed}.` : '',
+      }),
+    );
+  });
+  return dedupe(results);
+}
+
 /** iVeCloud: list price lives in the data-amount attribute, in rand. */
 function parseIveCloud(page: Page, provider: Provider): RawPlan[] {
   const html = page.html;
@@ -353,4 +436,6 @@ export const PARSERS: Record<string, (page: Page, provider: Provider) => RawPlan
   hostafrica: parseHostAfrica,
   virtualservers: parseVirtualServers,
   ivecloud: parseIveCloud,
+  toblo: parseToblo,
+  axxess: parseAxxess,
 };

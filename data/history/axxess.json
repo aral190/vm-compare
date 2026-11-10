@@ -1,0 +1,63 @@
+[
+  {
+    "date": "2026-11-10",
+    "plans": [
+      {
+        "id": "axxess-standard",
+        "priceInclVatCents": 21900,
+        "vcpu": 1,
+        "ramGb": 1,
+        "storageGb": 50
+      },
+      {
+        "id": "axxess-standard-plus",
+        "priceInclVatCents": 37900,
+        "vcpu": 2,
+        "ramGb": 2,
+        "storageGb": 75
+      },
+      {
+        "id": "axxess-pro",
+        "priceInclVatCents": 64900,
+        "vcpu": 4,
+        "ramGb": 4,
+        "storageGb": 100
+      },
+      {
+        "id": "axxess-pro-plus",
+        "priceInclVatCents": 96900,
+        "vcpu": 4,
+        "ramGb": 8,
+        "storageGb": 200
+      },
+      {
+        "id": "axxess-mega",
+        "priceInclVatCents": 156900,
+        "vcpu": 8,
+        "ramGb": 12,
+        "storageGb": 500
+      },
+      {
+        "id": "axxess-mega-plus",
+        "priceInclVatCents": 215900,
+        "vcpu": 10,
+        "ramGb": 16,
+        "storageGb": 750
+      },
+      {
+        "id": "axxess-ultra",
+        "priceInclVatCents": 296900,
+        "vcpu": 12,
+        "ramGb": 24,
+        "storageGb": 1000
+      },
+      {
+        "id": "axxess-ultra-plus",
+        "priceInclVatCents": 404900,
+        "vcpu": 16,
+        "ramGb": 32,
+        "storageGb": 1500
+      }
+    ]
+  }
+]

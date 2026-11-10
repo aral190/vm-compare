@@ -13,7 +13,8 @@ export interface AdapterResult {
 const READER_PREFIX = 'https://r.jina.ai/';
 
 async function fetchPage(provider: Provider): Promise<Page> {
-  const url = provider.fetchMode === 'jina' ? `${READER_PREFIX}${provider.pricingUrl}` : provider.pricingUrl;
+  const source = provider.feedUrl ?? provider.pricingUrl;
+  const url = provider.fetchMode === 'jina' ? `${READER_PREFIX}${source}` : source;
   const response = await fetch(url, {
     headers: {
       'user-agent': 'VMCompareBot/1.0 (+https://vm-compare.fixes.co.za)',
@@ -30,6 +31,10 @@ async function fetchPage(provider: Provider): Promise<Page> {
   }
 
   const body = await response.text();
+  if (provider.feedUrl) {
+    // Feeds are usually JSON; keep the raw body for the provider parser.
+    return { html: body, text: body };
+  }
   if (provider.fetchMode === 'jina') {
     return { html: body, text: body.replace(/\s+/g, ' ').trim() };
   }

@@ -279,5 +279,56 @@
     "reputation": "South African host with Johannesburg and Cape Town locations, DDoS protection and frequent 50% first-term promotions.",
     "affiliateUrl": null,
     "notes": "List prices are used; the recurring 50% sale is ignored. VAT treatment not stated; treated as exclusive. Support took a long time to respond in our experience."
+  },
+  {
+    "slug": "toblo",
+    "name": "Toblo",
+    "website": "https://toblo.co.za",
+    "pricingUrl": "https://toblo.co.za/vps",
+    "category": "sa",
+    "locations": [
+      "Pretoria"
+    ],
+    "vat": "unknown",
+    "adapter": "html",
+    "fetchMode": "direct",
+    "features": [
+      "nvme",
+      "epyc",
+      "kvm",
+      "root-access",
+      "unlimited-bandwidth",
+      "local-support",
+      "sla"
+    ],
+    "reputation": "South African host running AMD EPYC KVM VPS with NVMe storage, unlimited traffic and a 99.9% uptime SLA in Pretoria.",
+    "affiliateUrl": null,
+    "notes": "Prices are advertised per month with no setup fee. VAT treatment is not stated on the pricing page, so prices are treated as exclusive for comparison."
+  },
+  {
+    "slug": "axxess",
+    "name": "Axxess",
+    "website": "https://www.axxess.co.za",
+    "pricingUrl": "https://www.axxess.co.za/hosting/vps",
+    "feedUrl": "https://www.axxess.co.za/products/get-filtered-product-display-ajax/927/",
+    "category": "sa",
+    "locations": [
+      "South Africa"
+    ],
+    "vat": "incl",
+    "adapter": "html",
+    "fetchMode": "direct",
+    "features": [
+      "ssd",
+      "backups",
+      "ipv6",
+      "root-access",
+      "unlimited-bandwidth",
+      "dedicated-ip",
+      "local-support"
+    ],
+    "reputation": "Established South African ISP offering self-managed VPS hosting with Samsung enterprise SSD storage, IPv4/IPv6 connectivity and free monthly backups.",
+    "affiliateUrl": null,
+    "notes": "Prices include VAT. The four-month promotional price is ignored; the regular monthly price is used. The data-centre city is not stated on the pricing page. The product list is loaded from Axxess's JSON feed, which the scraper reads directly."
   }
 ]
