@@ -35,9 +35,11 @@ jobs:
         run: npm ci
 
       - name: Scrape provider prices
+        id: scrape
         run: npm run scrape
 
       - name: Validate data
+        id: validate
         run: npm run validate
 
       - name: Commit changed prices
@@ -53,6 +55,7 @@ jobs:
           fi
 
       - name: Build site
+        id: build
         run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
@@ -66,3 +69,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notify Telegram
+        if: always()
+        uses: ./.github/actions/telegram-notify
+        with:
+          bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          title: Weekly VPS price update
+          status: ${{ job.status }}
+          details: |
+            Scrape: ${{ steps.scrape.outcome || 'skipped' }}
+            Validate: ${{ steps.validate.outcome || 'skipped' }}
+            Build: ${{ steps.build.outcome || 'skipped' }}
+            Deploy: ${{ steps.deployment.outcome || 'skipped' }}

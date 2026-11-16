@@ -99,6 +99,22 @@ If a site is JS-heavy or bot-protected, set `fetchMode: "jina"` (reader proxy) o
 
 GitHub Pages, deployed by `.github/workflows/deploy.yml` on every push to `main`. The weekly update runs from `.github/workflows/update.yml` every Monday at 04:00 UTC (06:00 SAST).
 
+### Telegram notifications
+
+Both workflows send a Telegram message after each run with the overall status, branch, commit and a link to the run. The weekly update also reports the outcome of the scrape, validation, build and deploy steps.
+
+The message is sent by `.github/actions/telegram-notify` and is skipped automatically when the secrets are not configured, so forks and local runs are unaffected.
+
+To enable it:
+
+1. Create a bot with [@BotFather](https://t.me/BotFather) and copy the token.
+2. Send the bot a message, then find the chat ID (for example with `https://api.telegram.org/bot<token>/getUpdates`).
+3. Add both values as repository secrets under **Settings → Secrets and variables → Actions**:
+   - `TELEGRAM_BOT_TOKEN` — the bot token from BotFather.
+   - `TELEGRAM_CHAT_ID` — the chat or group ID to post into.
+
+No workflow changes are needed afterwards; the next build or weekly update will post a message.
+
 ### GitHub Pages settings
 
 - Source: **GitHub Actions**

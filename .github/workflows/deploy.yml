@@ -54,3 +54,22 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  notify:
+    needs: [build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Notify Telegram
+        uses: ./.github/actions/telegram-notify
+        with:
+          bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          title: Deploy to GitHub Pages
+          status: ${{ (needs.build.result == 'success' && needs.deploy.result == 'success') && 'success' || (needs.build.result == 'cancelled' || needs.deploy.result == 'cancelled') && 'cancelled' || 'failure' }}
+          details: |
+            Build: ${{ needs.build.result }}
+            Deploy: ${{ needs.deploy.result }}
