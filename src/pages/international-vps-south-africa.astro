@@ -1,100 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import InternationalPriceTable from '../components/InternationalPriceTable.astro';
+import { EUR_ZAR, HOURS_PER_MONTH, USD_ZAR, providers, rows } from '../lib/international';
 import { formatRand } from '../lib/format';
 import { SITE_URL } from '../lib/site';
-import { withUtm } from '../lib/utm';
 
-const RATE = 18.5;
-const HOURS_PER_MONTH = 730;
-
-const zarInclVat = (usd: number) => Math.round(usd * RATE * 1.15 * 100);
-
-interface IntlPlan {
-  name: string;
-  region: string;
-  vcpu: number;
-  ramGb: number;
-  storageGb: number;
-  transferTb: number;
-  usd: number;
-}
-
-const providers: Array<{
-  name: string;
-  url: string;
-  note: string;
-  plans: IntlPlan[];
-}> = [
-  {
-    name: 'Vultr',
-    url: 'https://www.vultr.com/pricing/',
-    note: 'Cloud Compute, Johannesburg region. Regular performance plans shown; high-frequency and dedicated CPU plans cost more.',
-    plans: [
-      { name: 'Cloud Compute 1GB', region: 'Johannesburg', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
-      { name: 'Cloud Compute 2GB', region: 'Johannesburg', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 10 },
-      { name: 'Cloud Compute 4GB', region: 'Johannesburg', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 3, usd: 20 },
-      { name: 'Cloud Compute 8GB', region: 'Johannesburg', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 4, usd: 40 },
-      { name: 'Cloud Compute 16GB', region: 'Johannesburg', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 5, usd: 80 },
-      { name: 'Cloud Compute 32GB', region: 'Johannesburg', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 6, usd: 160 },
-    ],
-  },
-  {
-    name: 'Akamai / Linode',
-    url: 'https://www.linode.com/pricing/',
-    note: 'Shared CPU instances in the Johannesburg region. Dedicated CPU and high-memory plans cost more.',
-    plans: [
-      { name: 'Nanode 1GB', region: 'Johannesburg', vcpu: 1, ramGb: 1, storageGb: 25, transferTb: 1, usd: 5 },
-      { name: 'Linode 2GB', region: 'Johannesburg', vcpu: 1, ramGb: 2, storageGb: 50, transferTb: 2, usd: 12 },
-      { name: 'Linode 4GB', region: 'Johannesburg', vcpu: 2, ramGb: 4, storageGb: 80, transferTb: 4, usd: 24 },
-      { name: 'Linode 8GB', region: 'Johannesburg', vcpu: 4, ramGb: 8, storageGb: 160, transferTb: 5, usd: 48 },
-      { name: 'Linode 16GB', region: 'Johannesburg', vcpu: 6, ramGb: 16, storageGb: 320, transferTb: 8, usd: 96 },
-      { name: 'Linode 32GB', region: 'Johannesburg', vcpu: 8, ramGb: 32, storageGb: 640, transferTb: 10, usd: 192 },
-    ],
-  },
-];
-
-const rows = providers.flatMap((provider) =>
-  provider.plans.map((plan) => ({
-    provider: provider.name,
-    providerUrl: provider.url,
-    ...plan,
-    zarInclVatCents: zarInclVat(plan.usd),
-  })),
-);
-
-interface AwsInstance {
-  name: string;
-  family: string;
-  vcpu: number;
-  ramGb: number;
-  network: string;
-  usdHour: number;
-}
-
-// AWS EC2 on-demand Linux, shared tenancy, af-south-1 (Africa / Cape Town).
-// Source: AWS Price List API, cross-checked against instances.vantage.sh.
-const awsInstances: AwsInstance[] = [
-  { name: 't4g.micro', family: 'Burstable', vcpu: 2, ramGb: 1, network: 'Up to 5 Gbps', usdHour: 0.0108 },
-  { name: 't4g.small', family: 'Burstable', vcpu: 2, ramGb: 2, network: 'Up to 5 Gbps', usdHour: 0.0217 },
-  { name: 't4g.medium', family: 'Burstable', vcpu: 2, ramGb: 4, network: 'Up to 5 Gbps', usdHour: 0.0434 },
-  { name: 't3.small', family: 'Burstable', vcpu: 2, ramGb: 2, network: 'Up to 5 Gbps', usdHour: 0.0271 },
-  { name: 't3.medium', family: 'Burstable', vcpu: 2, ramGb: 4, network: 'Up to 5 Gbps', usdHour: 0.0542 },
-  { name: 't4g.large', family: 'Burstable', vcpu: 2, ramGb: 8, network: 'Up to 5 Gbps', usdHour: 0.0867 },
-  { name: 't3.large', family: 'Burstable', vcpu: 2, ramGb: 8, network: 'Up to 5 Gbps', usdHour: 0.1085 },
-  { name: 'c6g.large', family: 'Compute', vcpu: 2, ramGb: 4, network: 'Up to 10 Gbps', usdHour: 0.0912 },
-  { name: 'm6g.large', family: 'General', vcpu: 2, ramGb: 8, network: 'Up to 10 Gbps', usdHour: 0.1016 },
-  { name: 'r6g.large', family: 'Memory', vcpu: 2, ramGb: 16, network: 'Up to 10 Gbps', usdHour: 0.1344 },
-  { name: 'c6g.xlarge', family: 'Compute', vcpu: 4, ramGb: 8, network: 'Up to 10 Gbps', usdHour: 0.1824 },
-  { name: 'm6g.xlarge', family: 'General', vcpu: 4, ramGb: 16, network: 'Up to 10 Gbps', usdHour: 0.2032 },
-  { name: 'r6g.xlarge', family: 'Memory', vcpu: 4, ramGb: 32, network: 'Up to 10 Gbps', usdHour: 0.2688 },
-];
-
-const awsRows = awsInstances.map((instance) => ({
-  ...instance,
-  usdMonth: instance.usdHour * HOURS_PER_MONTH,
-  zarInclVatCents: zarInclVat(instance.usdHour * HOURS_PER_MONTH),
-  url: `https://instances.vantage.sh/aws/ec2/${instance.name}`,
-}));
+const cheapest = rows[0];
+const saPlanCount = rows.filter((row) => row.region === 'South Africa').length;
+const europePlanCount = rows.filter((row) => row.region === 'Europe').length;
 
 const structuredData = [
   {
@@ -113,63 +26,57 @@ const structuredData = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'International VPS providers with South Africa regions',
-    numberOfItems: rows.length + awsRows.length,
-    itemListElement: [
-      ...rows.map((row, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'Product',
-          name: `${row.provider} ${row.name}`,
-          description: `${row.region}: ${row.vcpu} vCPU, ${row.ramGb} GB RAM, ${row.storageGb} GB SSD, ${row.transferTb} TB transfer`,
-          brand: { '@type': 'Brand', name: row.provider },
-          offers: {
-            '@type': 'Offer',
-            price: row.usd.toFixed(2),
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock',
-            url: row.providerUrl,
-          },
+    name: 'International VPS providers with South Africa or Europe regions',
+    numberOfItems: rows.length,
+    itemListElement: rows.map((row, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: `${row.provider} ${row.plan}`,
+        description: `${row.region}: ${row.vcpu} vCPU, ${row.ramGb} GB RAM, ${row.storage}, ${row.traffic} traffic`,
+        brand: { '@type': 'Brand', name: row.provider },
+        offers: {
+          '@type': 'Offer',
+          price: (row.zarInclVatCents / 100).toFixed(2),
+          priceCurrency: 'ZAR',
+          availability: 'https://schema.org/InStock',
+          url: row.providerUrl,
         },
-      })),
-      ...awsRows.map((row, index) => ({
-        '@type': 'ListItem',
-        position: rows.length + index + 1,
-        item: {
-          '@type': 'Product',
-          name: `AWS EC2 ${row.name}`,
-          description: `Cape Town: ${row.vcpu} vCPU, ${row.ramGb} GB RAM, EBS storage, ${row.network}`,
-          brand: { '@type': 'Brand', name: 'AWS' },
-          offers: {
-            '@type': 'Offer',
-            price: row.usdHour.toFixed(4),
-            priceCurrency: 'USD',
-            availability: 'https://schema.org/InStock',
-            url: row.url,
-          },
-        },
-      })),
-    ],
+      },
+    })),
   },
 ];
 ---
 
 <Base
-  title="International VPS with South Africa regions (2026)"
-  description="Vultr and Akamai/Linode in Johannesburg, plus AWS EC2 in Africa (Cape Town). USD prices converted to rand including VAT, kept separate from the South African comparison."
+  title="International VPS with South Africa and Europe regions (2026)"
+  description={`Compare ${rows.length} international VPS plans from ${providers.length} providers with South Africa or Europe regions, including Vultr, Akamai/Linode, AWS, Webdock and Contabo. Month-to-month prices converted to rand including VAT.`}
   canonicalPath="/international-vps-south-africa/"
   jsonLd={structuredData}
 >
   <section class="provider-hero">
     <div class="container">
       <span class="section-label">International providers</span>
-      <h1>International VPS with South Africa regions</h1>
+      <h1>International VPS with South Africa and Europe regions</h1>
       <p class="hero-lede">
-        Global providers now offer compute in Johannesburg and Cape Town. Their prices are billed in
-        US dollars and often by the hour, so they are kept separate from the main South African
-        comparison. This page shows indicative monthly prices for context.
+        Global clouds with local regions, plus European value hosts that deliver more RAM for the
+        money. Every price is shown month-to-month and converted to rand so you can compare like
+        with like.
       </p>
+
+      <div class="hero-stats">
+        <span class="stat-pill"><strong>{providers.length}</strong> providers</span>
+        <span class="stat-pill"><strong>{rows.length}</strong> plans</span>
+        <span class="stat-pill"><strong>{saPlanCount}</strong> SA-hosted plans</span>
+        <span class="stat-pill"><strong>{europePlanCount}</strong> Europe-hosted plans</span>
+        <span class="stat-pill">Cheapest from <strong>{formatRand(cheapest.zarInclVatCents)}/mo</strong></span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="#compare">Compare all plans</a>
+        <a class="button button-secondary" href="/#compare">South African providers</a>
+      </div>
     </div>
   </section>
 
@@ -177,145 +84,64 @@ const structuredData = [
     <div class="container">
       <div class="callout">
         <strong>How to read these numbers.</strong> USD list prices are converted at an indicative
-        R{RATE.toFixed(2)}/US$ and grossed up by 15% VAT to match the local comparison. International
-        providers may bill in USD, apply different VAT rules, or charge for extras such as EBS
-        volumes, snapshots and IPv4 addresses. Treat these as a sanity check, not a quote.
+        R{USD_ZAR.toFixed(2)}/US$ and EUR prices at R{EUR_ZAR.toFixed(2)}/€, then treated as
+        VAT-exclusive and grossed up by 15% to match the local comparison. Where a provider offers
+        several currencies (Webdock quotes EUR, DKK and USD), we use its USD price. VAT treatment
+        depends on your billing country and whether reverse-charge rules apply. We use the
+        month-to-month rate, not prepaid commitments: Webdock charges the same monthly price whether
+        you pay monthly or yearly, and Contabo's 1-month rate is used instead of its 24-month
+        prepay discount. Hourly cloud plans are estimated at {HOURS_PER_MONTH} hours per month. AWS
+        storage is EBS only and billed separately.
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section compare" id="compare">
     <div class="container">
       <div class="section-head">
         <div>
-          <span class="section-label">Johannesburg</span>
-          <h2>Global cloud VPS — Johannesburg</h2>
-          <p>Vultr and Akamai/Linode shared-CPU plans in the Johannesburg region.</p>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th scope="col">Provider</th>
-                <th scope="col">Plan</th>
-                <th scope="col">Region</th>
-                <th scope="col" class="num">vCPU</th>
-                <th scope="col" class="num">RAM</th>
-                <th scope="col">Storage</th>
-                <th scope="col">Transfer</th>
-                <th scope="col" class="num">USD / mo</th>
-                <th scope="col" class="num">≈ ZAR incl. VAT</th>
-                <th scope="col"><span class="visually-hidden">Website</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr>
-                  <td data-label="Provider">
-                    <a class="provider-link" href={withUtm(row.providerUrl)} target="_blank" rel="noopener">
-                      {row.provider}
-                    </a>
-                  </td>
-                  <td data-label="Plan">{row.name}</td>
-                  <td data-label="Region">{row.region}</td>
-                  <td class="num" data-label="vCPU">{row.vcpu}</td>
-                  <td class="num" data-label="RAM">{row.ramGb} GB</td>
-                  <td data-label="Storage">{row.storageGb} GB SSD</td>
-                  <td data-label="Transfer">{row.transferTb} TB</td>
-                  <td class="num" data-label="USD / mo">${row.usd}</td>
-                  <td class="num" data-label="≈ ZAR incl. VAT">{formatRand(row.zarInclVatCents)}</td>
-                  <td data-label="Website">
-                    <a class="order-link" href={withUtm(row.providerUrl)} target="_blank" rel="noopener">View →</a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <span class="section-label">Cape Town · af-south-1</span>
-          <h2>AWS EC2 — Africa (Cape Town)</h2>
+          <span class="section-label">Full comparison</span>
+          <h2>Every international plan, searchable and filterable</h2>
           <p>
-            On-demand Linux, shared tenancy. Storage is EBS only and billed separately. Instance
-            data and pricing cross-checked against
-            <a href={withUtm('https://instances.vantage.sh/')} target="_blank" rel="noopener">instances.vantage.sh</a>.
+            Search by provider or plan, filter by region, RAM, vCPU or provider, and sort by
+            month-to-month price, value or resources. Plans with a South Africa region carry a
+            green <span class="badge badge-region">SA regions</span> pill. Filters sync to the URL,
+            so you can bookmark or share a view.
           </p>
         </div>
       </div>
 
-      <div class="table-wrap">
-        <div class="table-scroll">
-          <table class="price-table">
-            <thead>
-              <tr>
-                <th scope="col">Instance</th>
-                <th scope="col">Family</th>
-                <th scope="col" class="num">vCPU</th>
-                <th scope="col" class="num">RAM</th>
-                <th scope="col">Storage</th>
-                <th scope="col">Network</th>
-                <th scope="col" class="num">USD / hr</th>
-                <th scope="col" class="num">USD / mo</th>
-                <th scope="col" class="num">≈ ZAR incl. VAT</th>
-                <th scope="col"><span class="visually-hidden">Reference</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              {awsRows.map((row) => (
-                <tr>
-                  <td data-label="Instance">
-                    <a class="provider-link" href={withUtm(row.url)} target="_blank" rel="noopener">{row.name}</a>
-                  </td>
-                  <td data-label="Family">{row.family}</td>
-                  <td class="num" data-label="vCPU">{row.vcpu}</td>
-                  <td class="num" data-label="RAM">{row.ramGb} GB</td>
-                  <td data-label="Storage">EBS only</td>
-                  <td data-label="Network">{row.network}</td>
-                  <td class="num" data-label="USD / hr">${row.usdHour.toFixed(4)}</td>
-                  <td class="num" data-label="USD / mo">${row.usdMonth.toFixed(2)}</td>
-                  <td class="num" data-label="≈ ZAR incl. VAT">{formatRand(row.zarInclVatCents)}</td>
-                  <td data-label="Reference">
-                    <a class="order-link" href={withUtm(row.url)} target="_blank" rel="noopener">View →</a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <p class="plan-sub" style="margin-top: 12px;">
-        Monthly estimates assume 730 hours of on-demand runtime. Add EBS storage, snapshots, data
-        transfer and a public IPv4 address for a realistic total. AWS also offers Savings Plans and
-        reserved instances.
-      </p>
+      <InternationalPriceTable plans={rows} />
     </div>
   </section>
 
   <section class="section">
     <div class="container prose">
-      <h2>Why keep them separate?</h2>
+      <h2>What gets included</h2>
       <p>
-        Johannesburg and Cape Town regions give the same latency benefit as a local host, but the
-        commercial model is different. Global clouds quote in USD, bill by the hour, charge
-        separately for storage, snapshots and IPv4 addresses, and may apply reverse-charge VAT.
-        Folding those numbers into a rand-per-month table without a lot of assumptions would make
-        the comparison less honest, not more.
+        Only providers with a South Africa or Europe region are listed. That keeps the comparison
+        useful for a South African audience: local regions give the lowest latency, and Europe is
+        the nearest low-cost alternative. Providers that only offer US, Asian or Australian
+        regions are excluded, however cheap they look.
       </p>
       <p>
-        For a small South African project, a local provider is usually simpler and cheaper. For
-        larger workloads that need object storage, managed databases or global networking, the
-        international providers can be a better fit.
+        A plan must be orderable at the price shown, on a month-to-month basis. Provider-wide
+        discounts that require a 12- or 24-month prepayment are ignored, because the renewal or
+        monthly price is what you actually pay.
+      </p>
+
+      <h2>Why keep them separate?</h2>
+      <p>
+        South African providers quote in rand and include VAT. International providers usually
+        quote in USD or EUR, bill by the hour or by the month, charge separately for storage,
+        snapshots and IPv4 addresses, and may apply reverse-charge VAT. Folding those numbers into
+        the local rand-per-month table without a lot of assumptions would make the comparison less
+        honest, not more.
+      </p>
+      <p>
+        For a small South African project, a local provider is usually simpler. For larger
+        workloads, or when raw RAM per rand matters more than latency, the European value hosts are
+        hard to beat.
       </p>
       <p>
         <a href="/#compare">See the South African comparison →</a>

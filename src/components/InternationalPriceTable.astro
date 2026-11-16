@@ -1,0 +1,365 @@
+---
+import type { IntlRow } from '../lib/international';
+import { formatMoney } from '../lib/international';
+import { formatPerGbRam, formatRand } from '../lib/format';
+import { featureBadgeClass, featureInfo, orderFeatures } from '../lib/features';
+import { withUtm } from '../lib/utm';
+
+interface Props {
+  plans: IntlRow[];
+}
+
+const { plans } = Astro.props;
+
+const providerOptions = [...new Map(plans.map((plan) => [plan.providerSlug, plan.provider])).entries()].sort(
+  (a, b) => a[1].localeCompare(b[1]),
+);
+
+function storageBadge(type: IntlRow['storageType']): { label: string; className: string } | null {
+  if (type === 'nvme') return { label: 'NVMe', className: 'badge-nvme' };
+  if (type === 'ssd') return { label: 'SSD', className: 'badge-ssd' };
+  if (type === 'mixed') return { label: 'Mixed', className: 'badge-outline' };
+  return null;
+}
+---
+
+<form class="filter-bar" id="intl-filters" aria-label="Filter international VPS plans">
+  <div class="filter-grid">
+    <div class="field field-search">
+      <label for="intl-search">Search</label>
+      <input
+        type="search"
+        id="intl-search"
+        name="q"
+        placeholder="Provider, plan or region"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="field">
+      <label for="intl-region">Region</label>
+      <select id="intl-region" name="region">
+        <option value="">Any region</option>
+        <option value="South Africa">South Africa</option>
+        <option value="Europe">Europe</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="intl-ram">Minimum RAM</label>
+      <select id="intl-ram" name="ram">
+        <option value="">Any RAM</option>
+        <option value="1">1 GB+</option>
+        <option value="2">2 GB+</option>
+        <option value="4">4 GB+</option>
+        <option value="8">8 GB+</option>
+        <option value="16">16 GB+</option>
+        <option value="32">32 GB+</option>
+        <option value="64">64 GB+</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="intl-vcpu">Minimum vCPU</label>
+      <select id="intl-vcpu" name="vcpu">
+        <option value="">Any vCPU</option>
+        <option value="1">1+</option>
+        <option value="2">2+</option>
+        <option value="4">4+</option>
+        <option value="6">6+</option>
+        <option value="8">8+</option>
+        <option value="12">12+</option>
+        <option value="16">16+</option>
+      </select>
+    </div>
+
+    <div class="field field-provider">
+      <label for="intl-provider">Provider</label>
+      <select id="intl-provider" name="provider">
+        <option value="">All providers</option>
+        {providerOptions.map(([slug, name]) => <option value={slug}>{name}</option>)}
+      </select>
+    </div>
+
+    <div class="field field-sort">
+      <label for="intl-sort">Sort by</label>
+      <select id="intl-sort" name="sort">
+        <option value="price-asc">Lowest month-to-month price</option>
+        <option value="price-desc">Highest month-to-month price</option>
+        <option value="value-asc">Best price per GB RAM</option>
+        <option value="value-desc">Worst price per GB RAM</option>
+        <option value="ram-desc">Most RAM</option>
+        <option value="ram-asc">Least RAM</option>
+        <option value="vcpu-desc">Most vCPU</option>
+        <option value="vcpu-asc">Least vCPU</option>
+        <option value="storage-desc">Most storage</option>
+        <option value="storage-asc">Least storage</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="filter-foot">
+    <span>
+      Showing <strong id="intl-count">all plans</strong> · month-to-month prices, VAT inclusive
+    </span>
+    <div class="filter-actions">
+      <button class="button button-ghost" type="button" id="intl-reset">Reset</button>
+    </div>
+  </div>
+</form>
+
+<div class="table-wrap">
+  <div class="table-scroll">
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Provider</th>
+          <th scope="col">Plan</th>
+          <th scope="col">Region</th>
+          <th scope="col" class="num" data-sort-key="vcpu" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="vcpu">
+              vCPU <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" class="num" data-sort-key="ram" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="ram">
+              RAM <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" data-sort-key="storage" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="storage">
+              Storage <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col">Traffic</th>
+          <th scope="col" class="num">Listed / mo</th>
+          <th scope="col" class="num" data-sort-key="price" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="price">
+              ≈ ZAR incl. VAT <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col" class="num" data-sort-key="value" aria-sort="none">
+            <button class="sort-button" type="button" data-sort-key="value">
+              R / GB RAM <span class="sort-arrow" aria-hidden="true">↕</span>
+            </button>
+          </th>
+          <th scope="col">Features</th>
+          <th scope="col"><span class="visually-hidden">Website</span></th>
+        </tr>
+      </thead>
+      <tbody id="intl-rows">
+        {plans.map((plan, index) => {
+          const badge = storageBadge(plan.storageType);
+          return (
+            <tr
+              data-intl-id={plan.id}
+              data-provider={plan.providerSlug}
+              data-region={plan.region}
+              data-ram={plan.ramGb}
+              data-vcpu={plan.vcpu}
+              data-storage-type={plan.storageType}
+              data-storage={plan.storageGb}
+              data-price={plan.zarInclVatCents}
+              data-value={Math.round(plan.pricePerGbRamCents)}
+              data-search={`${plan.provider} ${plan.plan} ${plan.region}`.toLowerCase()}
+            >
+              <td class="rank" data-label="#">{index + 1}</td>
+              <td class="provider-cell" data-label="Provider">
+                <a class="provider-link" href={withUtm(plan.providerUrl)} target="_blank" rel="noopener">
+                  {plan.provider}
+                </a>
+              </td>
+              <td class="plan-cell" data-label="Plan">
+                <span class="plan-name">{plan.plan}</span>
+                <span class="plan-sub">{plan.billingNote}</span>
+              </td>
+              <td data-label="Region">{plan.region}</td>
+              <td class="num spec" data-label="vCPU">{plan.vcpu}</td>
+              <td class="num spec" data-label="RAM">{plan.ramGb} GB</td>
+              <td class="storage-cell" data-label="Storage">
+                {plan.storage}
+                {badge && <span class={`badge ${badge.className}`}>{badge.label}</span>}
+              </td>
+              <td data-label="Traffic">{plan.traffic}</td>
+              <td class="num" data-label="Listed / mo">
+                {formatMoney(plan.price, plan.currency)}
+                {plan.hourlyPrice && (
+                  <span class="price-note">
+                    {formatMoney(plan.hourlyPrice, plan.currency, 4)}/hr
+                  </span>
+                )}
+              </td>
+              <td class="price-cell" data-label="≈ ZAR incl. VAT">
+                <span class="price-main">{formatRand(plan.zarInclVatCents)}</span>
+                <span class="price-note">incl. VAT</span>
+              </td>
+              <td class="num pergb" data-label="R / GB RAM">{formatPerGbRam(plan.pricePerGbRamCents)}</td>
+              <td class="features-cell" data-label="Features">
+                <div class="badge-stack">
+                  {orderFeatures(plan.features).slice(0, 5).map((feature) => (
+                    <span class={`badge ${featureBadgeClass(feature)}`} title={featureInfo(feature).description}>
+                      {featureInfo(feature).short}
+                    </span>
+                  ))}
+                </div>
+              </td>
+              <td data-label="Website">
+                <a class="order-link" href={withUtm(plan.providerUrl)} target="_blank" rel="noopener">
+                  View →
+                </a>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <div class="empty-state" id="intl-empty-state" hidden>
+    <strong>No plans match those filters</strong>
+    Try a shorter search term, another region, or lower the minimum RAM or vCPU.
+  </div>
+</div>
+
+<script>
+  function initInternationalFilters() {
+    const form = document.querySelector<HTMLFormElement>('#intl-filters');
+    const tbody = document.querySelector<HTMLTableSectionElement>('#intl-rows');
+    const empty = document.querySelector<HTMLElement>('#intl-empty-state');
+    const count = document.querySelector<HTMLElement>('#intl-count');
+    const reset = document.querySelector<HTMLButtonElement>('#intl-reset');
+    if (!form || !tbody || !count) return;
+
+    const rowsBody: HTMLTableSectionElement = tbody;
+    const countNode: HTMLElement = count;
+    const rows = Array.from(rowsBody.querySelectorAll<HTMLTableRowElement>('tr[data-intl-id]'));
+    const params = new URLSearchParams(window.location.search);
+
+    const search = form.elements.namedItem('q') as HTMLInputElement;
+    const region = form.elements.namedItem('region') as HTMLSelectElement;
+    const ram = form.elements.namedItem('ram') as HTMLSelectElement;
+    const vcpu = form.elements.namedItem('vcpu') as HTMLSelectElement;
+    const provider = form.elements.namedItem('provider') as HTMLSelectElement;
+    const sort = form.elements.namedItem('sort') as HTMLSelectElement;
+
+    function setSelect(select: HTMLSelectElement, value: string | null) {
+      if (!value) return;
+      if (Array.from(select.options).some((option) => option.value === value)) select.value = value;
+    }
+
+    setSelect(region, params.get('region'));
+    setSelect(ram, params.get('ram'));
+    setSelect(vcpu, params.get('vcpu'));
+    setSelect(provider, params.get('provider'));
+    setSelect(sort, params.get('sort'));
+    if (params.get('q')) search.value = params.get('q') ?? '';
+
+    function apply() {
+      const searchTerm = search.value.trim().toLowerCase();
+      const selectedRegion = region.value;
+      const minRam = Number(ram.value) || 0;
+      const minVcpu = Number(vcpu.value) || 0;
+      const providerSlug = provider.value;
+
+      let visible = 0;
+      for (const row of rows) {
+        const show =
+          (!searchTerm || (row.dataset.search ?? '').includes(searchTerm)) &&
+          (!selectedRegion || row.dataset.region === selectedRegion) &&
+          Number(row.dataset.ram) >= minRam &&
+          Number(row.dataset.vcpu) >= minVcpu &&
+          (!providerSlug || row.dataset.provider === providerSlug);
+
+        row.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      const direction = sort.value;
+      const sorted = [...rows].sort((a, b) => {
+        const priceA = Number(a.dataset.price);
+        const priceB = Number(b.dataset.price);
+        switch (direction) {
+          case 'price-desc':
+            return priceB - priceA;
+          case 'value-asc':
+            return Number(a.dataset.value) - Number(b.dataset.value) || priceA - priceB;
+          case 'value-desc':
+            return Number(b.dataset.value) - Number(a.dataset.value) || priceB - priceA;
+          case 'ram-desc':
+            return Number(b.dataset.ram) - Number(a.dataset.ram) || priceA - priceB;
+          case 'ram-asc':
+            return Number(a.dataset.ram) - Number(b.dataset.ram) || priceA - priceB;
+          case 'vcpu-desc':
+            return Number(b.dataset.vcpu) - Number(a.dataset.vcpu) || priceA - priceB;
+          case 'vcpu-asc':
+            return Number(a.dataset.vcpu) - Number(b.dataset.vcpu) || priceA - priceB;
+          case 'storage-desc':
+            return Number(b.dataset.storage) - Number(a.dataset.storage) || priceA - priceB;
+          case 'storage-asc':
+            return Number(a.dataset.storage) - Number(b.dataset.storage) || priceA - priceB;
+          default:
+            return priceA - priceB;
+        }
+      });
+
+      for (const row of sorted) rowsBody.appendChild(row);
+
+      let rank = 1;
+      for (const row of sorted) {
+        if (row.hidden) continue;
+        const cell = row.querySelector<HTMLElement>('.rank');
+        if (cell) cell.textContent = String(rank);
+        rank += 1;
+      }
+
+      countNode.textContent = `${visible} plan${visible === 1 ? '' : 's'}`;
+      if (empty) empty.hidden = visible !== 0;
+
+      const [sortKey, sortDirection] = sort.value.split('-');
+      for (const header of document.querySelectorAll<HTMLElement>('th[data-sort-key]')) {
+        const active = header.dataset.sortKey === sortKey;
+        header.classList.toggle('is-sorted', active);
+        header.setAttribute(
+          'aria-sort',
+          active ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none',
+        );
+        const arrow = header.querySelector<HTMLElement>('.sort-arrow');
+        if (arrow) arrow.textContent = active ? (sortDirection === 'asc' ? '↑' : '↓') : '↕';
+      }
+
+      const next = new URLSearchParams();
+      if (search.value.trim()) next.set('q', search.value.trim());
+      if (region.value) next.set('region', region.value);
+      if (ram.value) next.set('ram', ram.value);
+      if (vcpu.value) next.set('vcpu', vcpu.value);
+      if (provider.value) next.set('provider', provider.value);
+      if (sort.value !== 'price-asc') next.set('sort', sort.value);
+      const queryString = next.toString();
+      window.history.replaceState(null, '', queryString ? `?${queryString}#compare` : '#compare');
+    }
+
+    form.addEventListener('input', apply);
+    form.addEventListener('change', apply);
+    form.addEventListener('submit', (event) => event.preventDefault());
+    reset?.addEventListener('click', () => {
+      form.reset();
+      apply();
+    });
+
+    for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-sort-key]')) {
+      button.addEventListener('click', () => {
+        const key = button.dataset.sortKey;
+        if (!key) return;
+        const next = sort.value === `${key}-asc` ? `${key}-desc` : `${key}-asc`;
+        if (Array.from(sort.options).some((option) => option.value === next)) {
+          sort.value = next;
+          apply();
+        }
+      });
+    }
+
+    apply();
+  }
+
+  initInternationalFilters();
+</script>

@@ -110,6 +110,11 @@ export const FEATURES: Record<string, FeatureInfo> = {
     short: 'SLA',
     description: 'A published uptime service-level agreement.',
   },
+  'sa-regions': {
+    label: 'SA regions',
+    short: 'SA regions',
+    description: 'The provider runs a region in South Africa, which keeps latency to local users low.',
+  },
 };
 
 export function featureInfo(key: string): FeatureInfo {
@@ -122,6 +127,7 @@ export function featureInfo(key: string): FeatureInfo {
 
 export function orderFeatures(features: string[]): string[] {
   const priority = [
+    'sa-regions',
     'quick-support',
     'slow-support',
     'whatsapp-only',
@@ -144,6 +150,8 @@ export function orderFeatures(features: string[]): string[] {
 
 export function featureBadgeClass(key: string): string {
   switch (key) {
+    case 'sa-regions':
+      return 'badge-region';
     case 'quick-support':
       return 'badge-success';
     case 'slow-support':
