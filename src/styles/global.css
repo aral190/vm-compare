@@ -1161,6 +1161,10 @@ kbd {
   color: var(--text);
 }
 
+.callout p + p {
+  margin-top: 10px;
+}
+
 /* ---------- FAQ ---------- */
 .faq-list {
   display: flex;
