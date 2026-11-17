@@ -51,7 +51,7 @@ const structuredData = [
 
 <Base
   title="International VPS with South Africa and Europe regions (2026)"
-  description={`Compare ${rows.length} international VPS plans from ${providers.length} providers with South Africa or Europe regions, including Vultr, Akamai/Linode, AWS, DigitalOcean, OVHcloud, IONOS, HostKey, Advin, Euronodes, Leaseweb and netcup. Month-to-month prices converted to rand including VAT.`}
+  description={`Compare ${rows.length} international VPS plans from ${providers.length} providers with South Africa or Europe regions, including Google Cloud, Hetzner, Scaleway, UpCloud, Aruba Cloud and netcup. Month-to-month prices converted to rand including VAT.`}
   canonicalPath="/international-vps-south-africa/"
   jsonLd={structuredData}
 >
@@ -76,34 +76,64 @@ const structuredData = [
       <div class="hero-actions">
         <a class="button button-primary" href="#compare">Compare all plans</a>
         <a class="button button-secondary" href="/#compare">South African providers</a>
+        <button class="button button-secondary" type="button" popovertarget="pricing-notes">
+          How to read these numbers
+        </button>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="callout">
-        <p>
-          <strong>How to read these numbers.</strong> USD list prices are converted at an indicative
-          R{USD_ZAR.toFixed(2)}/US$ and EUR prices at R{EUR_ZAR.toFixed(2)}/€, then treated as
-          VAT-exclusive and grossed up by 15% to match the local comparison. Where a provider offers
-          several currencies (Webdock quotes EUR, DKK and USD), we use its USD price. VAT treatment
-          depends on your billing country and whether reverse-charge rules apply.
-        </p>
-        <p>
-          We use the month-to-month rate, not prepaid commitments. OVHcloud's headline price assumes
-          a 12-month term ($8.50 for VPS-2, against $10.00 month-to-month), and IONOS's $8.00 is a
-          three-month intro on a one-year contract, so its recurring $25/month is shown instead.
-          Webdock charges the same price whether you pay monthly or yearly, and Contabo's 1-month
-          rate is used instead of its 24-month prepay discount. Hourly plans are estimated at
-          {HOURS_PER_MONTH} hours per month and capped at the provider's monthly maximum where it has
-          one (Advin, DigitalOcean). Euronodes prices include its €0.70 IPv4 charge. netcup quotes
-          German prices including 19% VAT, so its rows use the net monthly rate: the 4 vCPU / 8 GB
-          VPS Lite 2 is €9.50 gross, or €7.98 net. AWS storage is EBS only and billed separately.
-        </p>
-      </div>
-    </div>
-  </section>
+  <div
+    id="pricing-notes"
+    class="info-popover"
+    popover
+    role="dialog"
+    aria-labelledby="pricing-notes-title"
+  >
+    <h2 id="pricing-notes-title">How to read these numbers</h2>
+    <p>
+      USD list prices are converted at an indicative R{USD_ZAR.toFixed(2)}/US$ and EUR prices at
+      R{EUR_ZAR.toFixed(2)}/€, then treated as VAT-exclusive and grossed up by 15% to match the local
+      comparison. Where a provider offers several currencies (Webdock quotes EUR, DKK and USD), we
+      use its USD price. VAT treatment depends on your billing country and whether reverse-charge
+      rules apply.
+    </p>
+    <p>
+      We use the month-to-month rate, not prepaid commitments. OVHcloud's headline price assumes a
+      12-month term ($8.50 for VPS-2, against $10.00 month-to-month), and IONOS's $8.00 is a
+      three-month intro on a one-year contract, so its recurring $25/month is shown instead. Webdock
+      charges the same price whether you pay monthly or yearly, and Contabo's 1-month rate is used
+      instead of its 24-month prepay discount. Hourly plans are estimated at {HOURS_PER_MONTH} hours
+      per month and capped at the provider's monthly maximum where it has one (Advin,
+      DigitalOcean). Euronodes prices include its €0.70 IPv4 charge. netcup quotes German prices
+      including 19% VAT, so its rows use the net monthly rate: the 4 vCPU / 8 GB VPS Lite 2 is €9.50
+      gross, or €7.98 net. AWS and Google Cloud storage are billed separately (EBS and Persistent
+      Disk).
+    </p>
+    <p>
+      Hetzner's Cost-Optimized plans are monthly-priced, include IPv4 and 20 TB, but availability
+      varies. Scaleway's DEV1 rows are a development tier with no SLA, and local storage is billed
+      separately. UpCloud's Starter plans cap billing at 28 days per month. Kamatera's $4 Basic plan
+      is low-priority Availability capacity, not General Purpose. Aruba Cloud's cheaper VPS Hosting
+      prices are three-month promotions, so its recurring OpenStack NVMe prices are shown. Google
+      Cloud's free tier does not apply in Johannesburg.
+    </p>
+    <button
+      class="button button-secondary info-popover-close"
+      type="button"
+      popovertarget="pricing-notes"
+      popovertargetaction="hide"
+    >
+      Close
+    </button>
+  </div>
+
+  <script>
+    // Popover is Baseline since 2025; only load the polyfill in older browsers.
+    if (!Object.hasOwn(HTMLElement.prototype, 'popover')) {
+      import('@oddbird/popover-polyfill');
+    }
+  </script>
 
   <section class="section compare" id="compare">
     <div class="container">
