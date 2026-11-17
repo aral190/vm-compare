@@ -51,7 +51,7 @@ const structuredData = [
 
 <Base
   title="International VPS with South Africa and Europe regions (2026)"
-  description={`Compare ${rows.length} international VPS plans from ${providers.length} providers with South Africa or Europe regions, including Vultr, Akamai/Linode, AWS, DigitalOcean, OVHcloud, IONOS, HostKey, Advin, Euronodes and Leaseweb. Month-to-month prices converted to rand including VAT.`}
+  description={`Compare ${rows.length} international VPS plans from ${providers.length} providers with South Africa or Europe regions, including Vultr, Akamai/Linode, AWS, DigitalOcean, OVHcloud, IONOS, HostKey, Advin, Euronodes, Leaseweb and netcup. Month-to-month prices converted to rand including VAT.`}
   canonicalPath="/international-vps-south-africa/"
   jsonLd={structuredData}
 >
@@ -97,8 +97,9 @@ const structuredData = [
           Webdock charges the same price whether you pay monthly or yearly, and Contabo's 1-month
           rate is used instead of its 24-month prepay discount. Hourly plans are estimated at
           {HOURS_PER_MONTH} hours per month and capped at the provider's monthly maximum where it has
-          one (Advin, DigitalOcean). Euronodes prices include its €0.70 IPv4 charge. AWS storage is
-          EBS only and billed separately.
+          one (Advin, DigitalOcean). Euronodes prices include its €0.70 IPv4 charge. netcup quotes
+          German prices including 19% VAT, so its rows use the net monthly rate: the 4 vCPU / 8 GB
+          VPS Lite 2 is €9.50 gross, or €7.98 net. AWS storage is EBS only and billed separately.
         </p>
       </div>
     </div>
@@ -135,8 +136,9 @@ const structuredData = [
       <p>
         A plan must be orderable at the price shown. Provider-wide discounts that require a 12- or
         24-month prepayment are ignored, because the renewal or monthly price is what you actually
-        pay. IONOS is the one longer-term exception: it sells VPS on a one-year contract, so the
-        recurring price is listed with the term flagged in the row instead of the three-month teaser.
+        pay. IONOS and netcup are the longer-term exceptions: IONOS sells VPS on a one-year contract,
+        and netcup's VPS Lite tiers carry minimum terms of 1 to 12 months. In both cases the
+        recurring price is listed with the term flagged in the row instead of the teaser price.
       </p>
 
       <h2>Why keep them separate?</h2>
