@@ -142,10 +142,12 @@ const structuredData = [
           <span class="section-label">Full comparison</span>
           <h2>Every international plan, searchable and filterable</h2>
           <p>
-            Search by provider or plan, filter by region, RAM, vCPU or provider, and sort by
-            month-to-month price, value or resources. Plans with a South Africa region carry a
-            green <span class="badge badge-region">SA regions</span> pill. Filters sync to the URL,
-            so you can bookmark or share a view.
+            Search by provider or plan, filter by region, RAM, vCPU, KYC status or provider, and
+            sort by month-to-month price, value or resources. Plans with a South Africa region carry
+            a green <span class="badge badge-region">SA regions</span> pill. Providers that require
+            identity verification before provisioning carry a red
+            <span class="badge badge-danger">KYC required</span> badge. Filters sync to the URL, so
+            you can bookmark or share a view.
           </p>
         </div>
       </div>
@@ -169,6 +171,15 @@ const structuredData = [
         pay. IONOS and netcup are the longer-term exceptions: IONOS sells VPS on a one-year contract,
         and netcup's VPS Lite tiers carry minimum terms of 1 to 12 months. In both cases the
         recurring price is listed with the term flagged in the row instead of the teaser price.
+      </p>
+      <p>
+        Some European providers ask for identity documents before they will provision a server. We
+        mark those providers with a red <span class="badge badge-danger">KYC required</span> badge
+        and you can filter them out with the <strong>KYC / verification</strong> filter. The badge
+        means the provider has a documented identity check for new accounts, not that the plan is
+        bad value. It does mean the VM may not appear instantly after payment, and approval can add
+        hours or days. Providers that only run risk-based checks, which may or may not ask for
+        documents, are not marked.
       </p>
 
       <h2>Why keep them separate?</h2>

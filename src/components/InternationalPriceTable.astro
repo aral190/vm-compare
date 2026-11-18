@@ -81,6 +81,15 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
       </select>
     </div>
 
+    <div class="field">
+      <label for="intl-kyc">KYC / verification</label>
+      <select id="intl-kyc" name="kyc">
+        <option value="">Any KYC status</option>
+        <option value="required">KYC required</option>
+        <option value="none">No mandatory KYC</option>
+      </select>
+    </div>
+
     <div class="field field-sort">
       <label for="intl-sort">Sort by</label>
       <select id="intl-sort" name="sort">
@@ -156,13 +165,14 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
               data-intl-id={plan.id}
               data-provider={plan.providerSlug}
               data-region={plan.region}
+              data-kyc={plan.requiresKyc ? 'required' : 'none'}
               data-ram={plan.ramGb}
               data-vcpu={plan.vcpu}
               data-storage-type={plan.storageType}
               data-storage={plan.storageGb}
               data-price={plan.zarInclVatCents}
               data-value={Math.round(plan.pricePerGbRamCents)}
-              data-search={`${plan.provider} ${plan.plan} ${plan.region}`.toLowerCase()}
+              data-search={`${plan.provider} ${plan.plan} ${plan.region} ${plan.requiresKyc ? 'kyc verification' : ''}`.toLowerCase()}
             >
               <td class="rank" data-label="#">{index + 1}</td>
               <td class="provider-cell" data-label="Provider">
@@ -197,6 +207,14 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
               <td class="num pergb" data-label="R / GB RAM">{formatPerGbRam(plan.pricePerGbRamCents)}</td>
               <td class="features-cell" data-label="Features">
                 <div class="badge-stack">
+                  {plan.requiresKyc && (
+                    <span
+                      class="badge badge-danger"
+                      title="The provider requires identity/KYC verification before it provisions a server. You may not get the VM instantly after payment."
+                    >
+                      KYC required
+                    </span>
+                  )}
                   {orderFeatures(plan.features).slice(0, 5).map((feature) => (
                     <span class={`badge ${featureBadgeClass(feature)}`} title={featureInfo(feature).description}>
                       {featureInfo(feature).short}
@@ -240,6 +258,7 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
     const ram = form.elements.namedItem('ram') as HTMLSelectElement;
     const vcpu = form.elements.namedItem('vcpu') as HTMLSelectElement;
     const provider = form.elements.namedItem('provider') as HTMLSelectElement;
+    const kyc = form.elements.namedItem('kyc') as HTMLSelectElement;
     const sort = form.elements.namedItem('sort') as HTMLSelectElement;
 
     function setSelect(select: HTMLSelectElement, value: string | null) {
@@ -251,6 +270,7 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
     setSelect(ram, params.get('ram'));
     setSelect(vcpu, params.get('vcpu'));
     setSelect(provider, params.get('provider'));
+    setSelect(kyc, params.get('kyc'));
     setSelect(sort, params.get('sort'));
     if (params.get('q')) search.value = params.get('q') ?? '';
 
@@ -260,6 +280,7 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
       const minRam = Number(ram.value) || 0;
       const minVcpu = Number(vcpu.value) || 0;
       const providerSlug = provider.value;
+      const kycStatus = kyc.value;
 
       let visible = 0;
       for (const row of rows) {
@@ -268,7 +289,8 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
           (!selectedRegion || row.dataset.region === selectedRegion) &&
           Number(row.dataset.ram) >= minRam &&
           Number(row.dataset.vcpu) >= minVcpu &&
-          (!providerSlug || row.dataset.provider === providerSlug);
+          (!providerSlug || row.dataset.provider === providerSlug) &&
+          (!kycStatus || row.dataset.kyc === kycStatus);
 
         row.hidden = !show;
         if (show) visible += 1;
@@ -333,6 +355,7 @@ function storageBadge(type: IntlRow['storageType']): { label: string; className:
       if (ram.value) next.set('ram', ram.value);
       if (vcpu.value) next.set('vcpu', vcpu.value);
       if (provider.value) next.set('provider', provider.value);
+      if (kyc.value) next.set('kyc', kyc.value);
       if (sort.value !== 'price-asc') next.set('sort', sort.value);
       const queryString = next.toString();
       window.history.replaceState(null, '', queryString ? `?${queryString}#compare` : '#compare');

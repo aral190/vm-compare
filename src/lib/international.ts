@@ -47,6 +47,8 @@ export interface ProviderInput {
   name: string;
   url: string;
   region: IntlRegion;
+  /** New accounts must pass identity/KYC verification before a server is provisioned. */
+  requiresKyc?: boolean;
   plans: PlanInput[];
 }
 
@@ -55,6 +57,7 @@ export interface IntlRow extends PlanInput {
   provider: string;
   providerUrl: string;
   region: IntlRegion;
+  requiresKyc: boolean;
   zarInclVatCents: number;
   pricePerGbRamCents: number;
   billingNote: string;
@@ -400,6 +403,7 @@ export const providers: ProviderInput[] = [
     name: 'Contabo',
     url: 'https://contabo.com/en/vps/',
     region: 'Europe',
+    requiresKyc: true,
     plans: [
       {
         id: 'contabo-cloud-vps-4',
@@ -492,6 +496,7 @@ export const providers: ProviderInput[] = [
     name: 'netcup',
     url: 'https://www.netcup.com/en/server/vps-lite',
     region: 'Europe',
+    requiresKyc: true,
     plans: [
       {
         id: 'netcup-vps-pico-g11-5s',
@@ -947,6 +952,7 @@ export const providers: ProviderInput[] = [
     name: 'Euronodes',
     url: 'https://euronodes.com/vps-portugal',
     region: 'Europe',
+    requiresKyc: true,
     plans: [
       {
         id: 'euronodes-2gb',
@@ -1098,6 +1104,7 @@ export const providers: ProviderInput[] = [
     name: 'HostKey',
     url: 'https://hostkey.com/vps/',
     region: 'Europe',
+    requiresKyc: true,
     plans: [
       {
         id: 'hostkey-v2-pico',
@@ -1264,6 +1271,7 @@ export const providers: ProviderInput[] = [
     name: 'Leaseweb',
     url: 'https://www.leaseweb.com/en/products-services/cloud/virtual-private-server',
     region: 'Europe',
+    requiresKyc: true,
     plans: [
       {
         id: 'leaseweb-vps-1',
@@ -1387,6 +1395,7 @@ export const rows: IntlRow[] = providers
       provider: provider.name,
       providerUrl: provider.url,
       region: provider.region,
+      requiresKyc: provider.requiresKyc ?? false,
       zarInclVatCents: zarInclVat(plan.price, plan.currency),
       pricePerGbRamCents: zarInclVat(plan.price, plan.currency) / plan.ramGb,
       billingNote: plan.billingNote ?? billingNote(plan, provider.slug),
